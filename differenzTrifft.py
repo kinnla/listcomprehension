@@ -1,3 +1,5 @@
+# http://www.schulentwicklung.nrw.de/angebote/materialdatenbank/upload/4674/143093_E_S1_AB1_Differenz_trifft.pdf
+
 import random
 import statistics
 import bisect
