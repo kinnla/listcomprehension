@@ -4,10 +4,13 @@ Computes possible equations for the wecker problem
 """
 
 # start time as 'hh:mm'
-START_TIME = '20:12'
+START_TIME = '20:42'
 
 # time span in minutes
 TIME_SPAN = 60
+
+# list of operators that can be inserted between the numbers
+OPS = ['+', '-', '*', '/', '==']
 
 # customized variant of eval() mapping an arithmetic-error to False
 def evalx(f):
@@ -15,9 +18,6 @@ def evalx(f):
 	except: return False
 
 # ----------------------------- main program ---------------------------- #
-
-# list of operators that can be inserted and must be tested
-OPS = ['+', '-', '*', '/', '==']
 
 # compute minutes of the day as loop variable
 minutesOfDay = int(START_TIME[:2]) * 60 + int(START_TIME[3:])
