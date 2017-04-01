@@ -1,7 +1,8 @@
 import random
 import statistics
+import bisect
 
-# create differences
+data = []
 
 # the optimal vector found so far
 # initial value is the equal vector
@@ -11,11 +12,10 @@ opt_vector = None
 # initially zero, to be evaluated in the first round
 opt_mean = float("inf")
 
-#differences = [abs(random.randint(1, 6) - random.randint(1, 6)) for _ in range(100000)]
-differences = []
 
 # generates the differences
-def gen_differences(vector):
+differences = []
+def gen_differences():
 	counter = 0
 	while True:
 		if counter >= len(differences):
@@ -23,18 +23,28 @@ def gen_differences(vector):
 		yield differences[counter]
 		counter += 1
 
-# generates new vectors by altering the given one in one coordinate
-def gen_vectors(vector):
+# generates new vectors by altering the given one in two coordinates
+def gen_vectors():
 	
-	# if called first time, return the default vector
-	if vector == None:
-		yield [3, 3, 3, 3, 3, 3]
+	# start with the default vector
+	vector = [3, 3, 3, 3, 3, 3]
+	if data == []:
+		yield vector
 
 	# init modifiers 
 	modifiers = [(a, b) for a in range(6) for b in range(6) if a != b]
 	random.shuffle(modifiers)
-	for counter in range(len(modifiers)):
-		# prepare next round
+
+	# loop while still vectors to be tried
+	counter = 0
+	while counter < len(modifiers):
+
+		# if we just found a better vector, reset the counter
+		if vector != data[0][2]:
+			vector = data[0][2]
+			counter = 0
+
+		# create the modified vector		
 		v = list(vector)
 		v[modifiers[counter][0]] -= 1
 		v[modifiers[counter][1]] += 1
@@ -43,29 +53,32 @@ def gen_vectors(vector):
 		if all(n >= 0 for n in v):
 			yield v
 
+		# adjust counter
+		counter += 1
+
 complete = False
 while not complete:
 
 	# try to find a better vector
-	for vector in gen_vectors(opt_vector):
+	for vector in gen_vectors():
 		complete = True
 
 		results = []
-		generator = gen_differences(vector)
-		for _ in range(2000):
-			counter = 0
+		generator = gen_differences()
+		for _ in range(1000):
 			v = list(vector)
 			while any(n > 0 for n in v):
-				diff = next(generator)
-				v[diff] = max(v[diff] - 1, 0)
-				counter += 1
+				v[next(generator)] -= 1
 
 			# one set completed. Add counter to results.
-			results.append(counter)
+			results.append(sum(vector) - sum(v))
 
 		# check if the new vector is better
 		mean = sum(results, 0.0) / len(results)
 		median = statistics.median(results)
+
+		# append results to the data
+		bisect.insort(data,(mean, median, vector))
 
 		if mean < opt_mean:
 			opt_vector = vector
@@ -73,3 +86,7 @@ while not complete:
 			print ("new: {!s} with mean: {!s} and median: {!s}".format(vector, mean, median))
 			complete = False
 			break
+
+# print data
+for d in data:
+	print(str(d))
