@@ -69,13 +69,13 @@ def main():
 
 		# prepare for the new series
 		series = []
-		generator = gen_throws()
+		throws = gen_throws()
 
 		# create the sets for this series
 		for _ in range(SETS_PER_SERIES):
 			copy_of_vector = list(vector)
 			while any(n > 0 for n in copy_of_vector):
-				copy_of_vector[next(generator)] -= 1
+				copy_of_vector[next(throws)] -= 1
 
 			# one set completed. Add number of throws to series.
 			series.append(sum(vector) - sum(copy_of_vector))
