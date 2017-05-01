@@ -187,7 +187,7 @@ r"""% Sitzplan.
 
 \begin{document}
 \begin{center}
-{\Large\textbf Sitzplan}
+{\Large \textbf{Sitzplan}}
 \par\medskip
 \noindent\begin{tikzpicture}
   \matrix(sitzplan)[
