@@ -153,7 +153,8 @@ def main():
     # delete temp file
     os.remove('temp.tex')
 
-    # open the combined pdf containing all variants
+    # rename the pdf file and then open it
+    os.rename('temp.pdf', args.output)
     os.system('open ' + args.output)
 
 # execute only if run as a script
