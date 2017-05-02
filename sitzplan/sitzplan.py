@@ -29,6 +29,7 @@ import PyPDF2
 import time
 import shutil
 import csv
+import locale
 
 def variants(tex_doc, n=1):
   """ Generates variants of a tex documents
@@ -74,6 +75,7 @@ def main():
   parser = argparse.ArgumentParser(
     description='Generates a Seating Plan, e.g. for a class room, based on a CSV spread sheet and generates a PDF.')
   parser.add_argument('csvfile', help='the csv file containing the input')
+  parser.add_argument('-e', '--encoding', default=locale.getpreferredencoding())
   parser.add_argument('-o', '--output', default=__file__+'.pdf',
                    help='the output file name')
   parser.add_argument('-t', '--title', default='Seating Plan',
@@ -94,7 +96,7 @@ def main():
       tex_doc += line
 
   # read the CSV doc
-  with open(args.csvfile, newline='') as csvfile:
+  with open(args.csvfile, encoding=args.encoding, newline='') as csvfile:
     reader = csv.DictReader(csvfile, delimiter=';')
     people = [p for p in reader]
 
