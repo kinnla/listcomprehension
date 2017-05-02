@@ -75,7 +75,8 @@ def main():
   parser = argparse.ArgumentParser(
     description='Generates a Seating Plan, e.g. for a class room, based on a CSV spread sheet and generates a PDF.')
   parser.add_argument('csvfile', help='the csv file containing the input')
-  parser.add_argument('-e', '--encoding', default=locale.getpreferredencoding())
+  parser.add_argument('-e', '--encoding', default=locale.getpreferredencoding(),
+    help='the character encoding of the CSV file, e.g. mac-roman.')
   parser.add_argument('-o', '--output', default=__file__+'.pdf',
                    help='the output file name')
   parser.add_argument('-t', '--title', default='Seating Plan',
