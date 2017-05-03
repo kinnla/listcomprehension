@@ -26,48 +26,11 @@ import argparse
 import os
 import subprocess
 import PyPDF2
-import time
-import shutil
+#import time
+#import shutil
 import csv
 import locale
-
-def variants(tex_doc, n=1):
-  """ Generates variants of a tex documents
-
-  tex_doc -- the tex document as a string
-  n -- the number of variants to be generated (default 1)
-  """
-
-  # additional contents for the replacements dictionary
-  B = ['-2', '-3', '-4', '+\\frac{1}{2}', '+\\frac{1}{3}', '+\\frac{2}{3}']
-  C = ['+\\frac{1}{2}', '+\\frac{1}{3}', '+\\frac{2}{3}', '-\\frac{1}{3}', '-\\frac{2}{3}']
-
-  # dictionary of replacements
-  replacements = {
-    '(NORMALFORM)': ['x^2' + b + 'x' + c for b in B for c in C],
-    '(2A)': [a + "'(x)=" + b for a in 'fgh' for b in ['x^2', '\\sqrt{x}', 'x^3', '-2x', '\\frac{x}{3}']],
-    '(2B)': [a + ',' + b + '\\overline{' + c + '}' for a in "01" for b in "789" for c in "23456"],
-    '(2C)': [a + '\\in\\mathbb{' + b + '}' for a in "xyabcni" for b in "NRQZ"],
-    '(2D)': [a + '\\neq-' + str(b) for a in "xyz" for b in range (1001, 1010)]
-  }
-
-  # loop n times
-  for i in range(n):
-
-    # create a variant of the tex document
-    # don't need to clone here, as replace will generate a copy
-    variant = tex_doc
-
-    # iterate on the replacement keys
-    for key in replacements:
-
-      # determine the actual replacement, then replace
-      l = replacements[key]
-      replacement = l[i % len(l)]
-      variant = variant.replace(key, replacement)
-
-    # yield the generated variant
-    yield variant
+import ast
 
 def main():
 
@@ -81,6 +44,8 @@ def main():
                    help='the output file name')
   parser.add_argument('-t', '--title', default='Seating Plan',
                    help='the document title')
+  parser.add_argument('--hspacing', default='',
+                   help='Horizontal spacing in milimeters, e.g. as [3,0,0,3] for a plan with 5 columns')
   args = parser.parse_args()
 
   # read the tex doc
@@ -96,69 +61,98 @@ def main():
       if len(line) >= 3 and line[0:3] == '"""': break
       tex_doc += line
 
+  # replace the document title
+  tex_doc = tex_doc.replace('(TITLE)', args.title)
+
   # read the CSV doc
   with open(args.csvfile, encoding=args.encoding, newline='') as csvfile:
     reader = csv.DictReader(csvfile, delimiter=';')
-    people = [p for p in reader]
-
+    
     # convert strings to integers
-    for p in people:
+    people = []
+    for p in reader:
       p['row'] = int(p['row'])
       p['column'] = int(p['column'])
+      people.append(p)
 
-    # determine height and width of the matrix
-    height = max([p['row'] for p in people]) + 1
-    width = max([p['column'] for p in people]) + 1
+  # determine height and width of the matrix
+  height = max([p['row'] for p in people]) + 1
+  width = max([p['column'] for p in people]) + 1
 
-    # create the matrix cell by cell
-    matrix = ""
-    for y in range(height):
-      for x in range(width):
+  # parse horizontal spacing (default 3mm)
+  hspacing = [3] * (width-1)
+  if args.hspacing != '':
+    hspacing = ast.literal_eval(args.hspacing)
 
-        # if not the first column, add the column separator
-        if x > 0:
-          matrix += "&"
+  # create the matrix cell by cell
+  matrix = ""
+  for y in range(height):
+    for x in range(width):
 
-        # find the eventual person sitting on this place
-        l = [p for p in people if p['column'] == x and p['row'] == y]
-        print(l)
+      # if not the first column, add the column separator
+      if x > 0:
+        matrix += "&"
+        
+        # if on the first row, add spacing
+        if y == 0:
+          matrix += ("[" + str(hspacing[x-1]) + "mm]")
 
-        # check for consistency
-        if len(l) > 1:
-          raise Error("Two people can not sit on the same place")
+      # find the eventual person sitting on this place
+      l = [p for p in people if p['column'] == x and p['row'] == y]
 
-        # add person
-        if len(l) == 1:
-          matrix += l[0]['name']
+      # check for consistency
+      if len(l) > 1:
+        raise IndexError("Two people can not sit on the same place")
 
-      # end one line
-      matrix += "\\\\\n"
+      # check if a person sits here
+      if len(l) == 1:
+        person = l[0]
 
-    # replace the matrix in the tex doc
-    tex_doc = tex_doc.replace('(MATRIX)', matrix)
+        # add person  
+        matrix += '{'
+        matrix += (person['name'] + r"\\")
 
-    # write the tex dor
-    with open('temp.tex', 'w') as file:
-      file.write(tex_doc)
+        # create hands, if given
+        if 'hands' in person:
+          hands = int(person['hands'])
+          matrix += hands * r"{\scalebox{.7}{\rotatebox[x=0mm, y=4mm]{-90}{\HandLeft}}}"
+          matrix += "~~"
 
-    # generate pdf from tex file
-    cmd = ['pdflatex', '-interaction', 'nonstopmode', 'temp.tex']
-    proc = subprocess.Popen(cmd)
-    proc.communicate()
+        # add string, if given
+        if 'string' in person:
+          matrix += person['string']
 
-    # check, if any latex errors
-    retcode = proc.returncode
-    if retcode != 0:
+        # end this node
+        matrix += '}'
 
-      # print error and halt
-      raise ValueError('Error {} executing command: {}'.format(retcode, ' '.join(cmd)))
+    # end one line
+    matrix += "\\\\\n"
 
-    # delete temp file
-    os.remove('temp.tex')
+  # replace the matrix in the tex doc
+  tex_doc = tex_doc.replace('(MATRIX)', matrix)
 
-    # rename the pdf file and then open it
-    os.rename('temp.pdf', args.output)
-    os.system('open ' + args.output)
+  # write the tex doc
+  with open('temp.tex', 'w') as file:
+    file.write(tex_doc)
+
+  # generate pdf from tex file
+  cmd = ['pdflatex', '-interaction', 'nonstopmode', 'temp.tex']
+  proc = subprocess.Popen(cmd)
+  proc.communicate()
+
+  # check, if any latex errors
+  retcode = proc.returncode
+  if retcode != 0:
+
+    # print error and halt
+    raise ValueError('Error {} executing command: {}'.format(retcode, ' '.join(cmd)))
+
+  # delete temp file
+  #os.remove('temp.tex')
+
+  # rename the pdf file and then open it
+  os.rename('temp.pdf', args.output)
+  os.system('open ' + args.output)
 
 # execute only if run as a script
 if __name__ == "__main__":
@@ -169,12 +163,15 @@ if __name__ == "__main__":
 # Please note that we need to define it as raw string through the \\ #
 ######################################################################
 
-r"""% Sitzplan. 
+r"""
+% Sitzplan. 
 % Based on http://texwelt.de/wissen/fragen/13193/kommentierter-sitzplan-mit-tikz
+
 \documentclass{scrartcl}
 \usepackage[a4paper, landscape, total={25cm, 18cm}]{geometry}
 \thispagestyle{empty}
 \usepackage[utf8]{inputenc}
+\usepackage{bbding}
 \usepackage{graphicx}
 \usepackage{ifthen}
 \usepackage{tikz}
@@ -183,14 +180,14 @@ r"""% Sitzplan.
 \tikzset{
   platz/.style={
     draw,
-    text width=3cm,% <- gross genug waehlen
+    text width=3cm,
     align=center,
-    minimum height=4\baselineskip% <- gross genug waehlen
+    minimum height=4\baselineskip
 }}
 
 \begin{document}
 \begin{center}
-{\Large \textbf{Sitzplan}}
+{\Large \textbf{(TITLE)}}
 \par\medskip
 \noindent\begin{tikzpicture}
   \matrix(sitzplan)[
