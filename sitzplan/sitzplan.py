@@ -2,18 +2,12 @@
 # -*- coding: utf-8 -*-
 
 """
-This file is a hybrid:
-- a python script that produces variants of a tex doc and compiles them to a single pdf
-- an embedded tex document with string markers
+This script produces a seating plan with the help of LaTeX.
+The data for the plan must be given as CSV file
+For help, run the script from command line with -h
 
-You can use it to produce unique versions of work sheets or tests. 
-This file contains a fake math test as an example.
-
-How to use:
-1. Paste your tex doc below the script (### note the comment marker ###)
-2. Insert markers to your tex doc that you want to replace
-3. Define the dictionary replacements (top of the script)
-4. Run the script
+example:
+>> python3 sitzplan.py example.csv -e mac-roman --hspacing [3,3] -t "Sitzplan"
 
 Prerequisits:
 - latex
@@ -26,8 +20,6 @@ import argparse
 import os
 import subprocess
 import PyPDF2
-#import time
-#import shutil
 import csv
 import locale
 import ast
