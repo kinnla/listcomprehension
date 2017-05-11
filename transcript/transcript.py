@@ -23,6 +23,18 @@ import PyPDF2
 import csv
 import locale
 import ast
+import re
+import time
+import shutil
+
+# regex pattern, matches non number characters
+NON_NUMBER = re.compile(r'[^\d]+')
+
+# regex pattern, indicates the end of a block
+END_OF_BLOCK = re.compile(r'Klasse|(Zusatzp|P)unkte*')
+
+# regex pattern, matches both regular and additional scores
+SCORE = re.compile(r'(Zusatzp|P)unkte*')
 
 def main():
 
@@ -34,8 +46,6 @@ def main():
     help='the character encoding of the CSV file, e.g. mac-roman or utf8.')
   parser.add_argument('-o', '--output', default=__file__+'.pdf',
                    help='the output file name')
-  parser.add_argument('-t', '--title', default='Transcript',
-                   help='the document title')
   args = parser.parse_args()
 
   # read the tex doc
@@ -45,83 +55,116 @@ def main():
     for line in file:
       if len(line) > 0 and line[0] == '%': break
 
-    # add lines to the tex_doc until we read a python docstring marker
-    tex_doc = ""
+    # add lines to the template until we read a python docstring marker
+    template = ""
     for line in file:
       if len(line) >= 3 and line[0:3] == '"""': break
-      tex_doc += line
-
-  # replace the document title
-  tex_doc = tex_doc.replace('(TITLE)', args.title)
+      template += line
 
   # read the CSV doc
   with open(args.csvfile, encoding=args.encoding, newline='') as csvfile:
     reader = csv.reader(csvfile, delimiter=';')
     
-    # convert strings to integers
-    tex = "\\noindent\\\\\n"
-    start = True
-    line_nr = 0
+    # read the first line containing the column headers
+    col_names = next(reader)
+
+    # compute maximum score
+    max_score = 0
+    for s in col_names:
+      if s[:6] == "Punkte":
+        max_score += int(NON_NUMBER.sub('', s))
+
+    # we need a counter to name the temp PDF files
+    counter = 0
+
+    # Merger to collect the temp PDF files
+    merger = PyPDF2.PdfFileMerger()
+
+    # create temp directory
+    temp_dir = "temp" + str(time.time())
+    os.makedirs(temp_dir)
+    os.chdir(temp_dir)
+
+    # read CSV line by line
     for line in reader:
-      if start:
-        col_names = line
-        start=False
+
+      # check for empty line
+      if len(line) == 0 or line[0] == '':
         continue
 
-      punkte=0
-      i=0
-      for col in line:
+      # init content to be inserted in the tex doc
+      content = "\\noindent\\\\\n"
 
-        # check for empty line
-        if col == '' and i == 0:
-          break
+      # count the student's score
+      total_score = 0
 
-        tex = tex + "\\textbf{" + col_names[i] + "}: "
-        tex = tex + col
-        tex += "\\\\\n"
+      # iterate on cells in line and synchronously on column names
+      col_names_iterator = iter(col_names)
+      for cell in line:
+        col_name = next(col_names_iterator)
+
+        # add cell to content
+        content += "\\textbf{{{name}}}: ".format(name=col_name)
+        content += cell
+        content += "\\\\\n"
         
-        if col_names[i][:6] == 'Punkte' or col_names[i][:6] == "Klasse":
-          tex += "\\\\\n"
-        if col_names[i][:6] == 'Punkte':
-          try:
-            punkte += int(col)
-          except:
-            print ("inconsistent data in line: " + str(line_nr) + " , col: " + str(i))
-        i+=1
+        # if end of block: add empty line, 
+        if re.match(END_OF_BLOCK, col_name):
+          content += "\\\\\n"
 
-      tex = tex + "\\textbf{Punkte Gesamt}: "
-      tex += str(punkte)
-      tex += "\\pagebreak\\\\\n"
+        # if the cell contains a score, add it to the total score
+        if re.match(SCORE, col_name):
+          if NON_NUMBER.sub('', cell):
+            total_score += int(NON_NUMBER.sub('', cell))
 
-      line_nr += 1
+      # line parsing complete
+      # postprocessing: escape special characters in latex
+      content = content.replace('&', '\\&')
 
-  # postprocessing
-  tex = tex.replace('&', '\\&')
+      # copy template
+      tex_doc = str(template)
 
-  # replace the matrix in the tex doc
-  tex_doc = tex_doc.replace('(CONTENT)', tex)
+      # insert individual values into the tex document
+      tex_doc = tex_doc.replace('(CONTENT)', content)
+      tex_doc = tex_doc.replace('(TOTAL_SCORE)', str(total_score))
+      tex_doc = tex_doc.replace('(MAX_SCORE)', str(max_score))
 
-  # write the tex doc
-  with open('temp.tex', 'w') as file:
-    file.write(tex_doc)
+      # increment counter and define file names
+      counter += 1
+      tex_file = str(counter) + ".tex"
+      pdf_file = str(counter) + ".pdf"
 
-  # generate pdf from tex file
-  cmd = ['pdflatex', '-interaction', 'nonstopmode', 'temp.tex']
-  proc = subprocess.Popen(cmd)
-  proc.communicate()
+      # write current variant as temp file
+      with open(tex_file, 'w') as file:
+        file.write(tex_doc)
 
-  # check, if any latex errors
-  retcode = proc.returncode
-  if retcode != 0:
+      # generate pdf from tex file
+      cmd = ['pdflatex', '-interaction', 'batchmode', tex_file]
+      proc = subprocess.Popen(cmd)
+      proc.communicate()
 
-    # print error and halt
-    raise ValueError('Error {} executing command: {}'.format(retcode, ' '.join(cmd)))
+      # check, if any latex errors
+      retcode = proc.returncode
+      if retcode != 0:
 
-  # delete temp file
-  #os.remove('temp.tex')
+        # print error and halt
+        raise ValueError('Error {} executing command: {}'.format(retcode, ' '.join(cmd)))
 
-  # rename the pdf file and then open it
-  os.rename('temp.pdf', args.output)
+      # append temp file to merger
+      merger.append(pdf_file)
+
+  # CSV parsing complete
+  # delete output file in case it exists
+  if os.path.isfile(args.output):
+    os.remove(args.output)
+
+  # merge the pdf files, write the result and clean up
+  os.chdir("..")
+  with open(args.output, 'wb') as file:
+    merger.write(file)
+    shutil.rmtree(temp_dir)
+
+  # open the combined pdf containing all variants
   os.system('open ' + args.output)
 
 # execute only if run as a script
@@ -136,17 +179,33 @@ if __name__ == "__main__":
 r"""
 % Transcript. 
 
-\documentclass{scrartcl}
-\usepackage[a4paper, total={18cm, 25cm}]{geometry}
-\thispagestyle{empty}
+\documentclass [a4paper, 11pt] {article}
+\usepackage[a4paper, total={15cm, 25cm}]{geometry}
+\pagestyle{empty}
 \usepackage[utf8]{inputenc}
-\usepackage{bbding}
 \usepackage{graphicx}
 \usepackage{ifthen}
 
 \begin{document}
-{\Large \textbf{(TITLE)}}
+
+\begin{centering}
+Gymnasium Tiergarten, Schuljahr 2016/17\\
 \par\medskip
+\textbf{\Large Informatik Wahlpflicht, Klassenstufe 9}
+\par\medskip
+Übersicht über die mündliche Noten, Stand 11.5.2017\\
+\par \medskip
+\end{centering}
+\hrule
+\par\medskip
+
 (CONTENT)
+\hrule
+\par\medskip
+\textbf{Gesamtpunktzahl}: (TOTAL_SCORE) von (MAX_SCORE)
+\par\medskip
+\hrule
+
+\footnotesize{* Zusatzaufgabe}
 \end{document}
 """
