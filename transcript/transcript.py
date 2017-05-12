@@ -28,13 +28,19 @@ import time
 import shutil
 
 # regex pattern, matches non number characters
-NON_NUMBER = re.compile(r'[^\d]+')
+NON_NUMBER = re.compile(r'[\D]+')
 
 # regex pattern, indicates the end of a block
-END_OF_BLOCK = re.compile(r'Klasse|(Zusatzp|P)unkte*')
+START_OF_BLOCK = re.compile(r'^(?!(Zusatzp|P)unkte|Team).*')
+
+# regex pattern, indicates the end of a block
+END_OF_BLOCK = re.compile(r'(Zusatzp|P)unkte*')
 
 # regex pattern, matches both regular and additional scores
 SCORE = re.compile(r'(Zusatzp|P)unkte*')
+
+# regex pattern, matches any column regarded as part of the name
+STUDENT_NAME = re.compile(r'Vorname|Nachname|Klasse')
 
 
 def parse_args():
@@ -96,36 +102,50 @@ def variants(template, args=None):
   for line in lines:
 
     # init content to be inserted in the tex doc
-    content = "\\noindent\\\\\n"
+    content = ''
 
     # count the student's score
     total_score = 0
+
+    # name of the student
+    student_name = ''
 
     # iterate on cells in line and synchronously on column names
     col_names_iterator = iter(col_names)
     for cell in line:
       col_name = next(col_names_iterator)
 
-      # add cell to content
-      content += "\\textbf{{{name}}}: ".format(name=col_name)
-      content += cell
-      content += "\\\\\n"
+      # preprocessing: escape special characters for latex
+      cell = cell.replace('&', '\\&')
+
+      # if cell is part of the student's name, then concatenate and continue
+      if re.match(STUDENT_NAME, col_name):
+        student_name = student_name + cell + ' '
+        continue
+
+      # if start of a block, then add the project name
+      if re.match(START_OF_BLOCK, col_name):
+        content += col_name
+
+      # if at the end or the start, add colum marker 
+      if re.match(START_OF_BLOCK, col_name) or re.match(END_OF_BLOCK, col_name):
+        content += '&'
+
+      # in any case, add cell content
+      content = content + cell + ' '
       
       # if end of block: add empty line, 
       if re.match(END_OF_BLOCK, col_name):
         content += "\\\\\n"
+        content += "\hline\n"
 
       # if the cell contains a score, add it to the total score
-      if re.match(SCORE, col_name):
-        if NON_NUMBER.sub('', cell):
-          total_score += int(NON_NUMBER.sub('', cell))
-
-    # line parsing complete
-    # postprocessing: escape special characters in latex
-    content = content.replace('&', '\\&')
+      if re.match(SCORE, col_name) and NON_NUMBER.sub('', cell):
+        total_score += int(NON_NUMBER.sub('', cell))
 
     # insert individual values into the tex document and then yield it
     tex_doc = template
+    tex_doc = tex_doc.replace('(STUDENT_NAME)', student_name)
     tex_doc = tex_doc.replace('(CONTENT)', content)
     tex_doc = tex_doc.replace('(TOTAL_SCORE)', str(total_score))
     tex_doc = tex_doc.replace('(MAX_SCORE)', str(max_score))
@@ -223,13 +243,19 @@ Gymnasium Tiergarten, Schuljahr 2016/17\\
 \par\medskip
 \textbf{\Large Informatik Wahlpflicht, Klassenstufe 9}
 \par\medskip
-Übersicht über die mündliche Noten, Stand 11.5.2017\\
+Übersicht über die mündliche Noten von \textbf{(STUDENT_NAME)}, Stand 11.5.2017\\
 \par \medskip
 \end{centering}
 \hrule
 \par\medskip
-
+\begin{centering}
+\begin{tabular}{|p{4cm}|p{8cm}|p{2cm}|}
+\hline
+\textbf{Abgabe} & \textbf{Bewertung} & \textbf{Punkte}\\
+\hline
 (CONTENT)
+\end{tabular}
+\end{centering}
 \hrule
 \par\medskip
 \textbf{Gesamtpunktzahl}: (TOTAL_SCORE) von (MAX_SCORE)
