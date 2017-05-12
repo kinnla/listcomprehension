@@ -36,9 +36,10 @@ END_OF_BLOCK = re.compile(r'Klasse|(Zusatzp|P)unkte*')
 # regex pattern, matches both regular and additional scores
 SCORE = re.compile(r'(Zusatzp|P)unkte*')
 
-def main():
 
-  # parse command line arguments
+def parse_args():
+  """parse command line arguments and return them as Namespace"""
+
   parser = argparse.ArgumentParser(
     description='Generates a transcript, based on a CSV spread sheet and generates a PDF.')
   parser.add_argument('csvfile', help='the csv file containing the input')
@@ -46,9 +47,13 @@ def main():
     help='the character encoding of the CSV file, e.g. mac-roman or utf8.')
   parser.add_argument('-o', '--output', default=__file__+'.pdf',
                    help='the output file name')
-  args = parser.parse_args()
+  return parser.parse_args()
 
-  # read the tex doc
+
+def read_template():
+  """reads the tex content from this file and returns it as a string"""
+ 
+  # open file
   with open(os.path.realpath(__file__), 'r') as file:
 
     # skip lines until we read a latex comment marker
@@ -61,6 +66,16 @@ def main():
       if len(line) >= 3 and line[0:3] == '"""': break
       template += line
 
+  # return template
+  return template
+
+
+def variants(template, args=None):
+  """
+  generates variants of a tex file from a given template.
+  Eventual parameters can passed as command line arguments.
+  """
+
   # read the CSV doc
   with open(args.csvfile, encoding=args.encoding, newline='') as csvfile:
     reader = csv.reader(csvfile, delimiter=';')
@@ -68,90 +83,94 @@ def main():
     # read the first line containing the column headers
     col_names = next(reader)
 
-    # compute maximum score
-    max_score = 0
-    for s in col_names:
-      if s[:6] == "Punkte":
-        max_score += int(NON_NUMBER.sub('', s))
+    # read other lines and store them in a list. Skip empty lines.
+    lines = [line for line in reader if len(line) and line[0]]
 
-    # we need a counter to name the temp PDF files
-    counter = 0
+  # compute maximum score
+  max_score = 0
+  for s in col_names:
+    if s[:6] == "Punkte":
+      max_score += int(NON_NUMBER.sub('', s))
 
-    # Merger to collect the temp PDF files
-    merger = PyPDF2.PdfFileMerger()
+  # iterate on the lines
+  for line in lines:
 
-    # create temp directory
-    temp_dir = "temp" + str(time.time())
-    os.makedirs(temp_dir)
-    os.chdir(temp_dir)
+    # init content to be inserted in the tex doc
+    content = "\\noindent\\\\\n"
 
-    # read CSV line by line
-    for line in reader:
+    # count the student's score
+    total_score = 0
 
-      # check for empty line
-      if len(line) == 0 or line[0] == '':
-        continue
+    # iterate on cells in line and synchronously on column names
+    col_names_iterator = iter(col_names)
+    for cell in line:
+      col_name = next(col_names_iterator)
 
-      # init content to be inserted in the tex doc
-      content = "\\noindent\\\\\n"
-
-      # count the student's score
-      total_score = 0
-
-      # iterate on cells in line and synchronously on column names
-      col_names_iterator = iter(col_names)
-      for cell in line:
-        col_name = next(col_names_iterator)
-
-        # add cell to content
-        content += "\\textbf{{{name}}}: ".format(name=col_name)
-        content += cell
+      # add cell to content
+      content += "\\textbf{{{name}}}: ".format(name=col_name)
+      content += cell
+      content += "\\\\\n"
+      
+      # if end of block: add empty line, 
+      if re.match(END_OF_BLOCK, col_name):
         content += "\\\\\n"
-        
-        # if end of block: add empty line, 
-        if re.match(END_OF_BLOCK, col_name):
-          content += "\\\\\n"
 
-        # if the cell contains a score, add it to the total score
-        if re.match(SCORE, col_name):
-          if NON_NUMBER.sub('', cell):
-            total_score += int(NON_NUMBER.sub('', cell))
+      # if the cell contains a score, add it to the total score
+      if re.match(SCORE, col_name):
+        if NON_NUMBER.sub('', cell):
+          total_score += int(NON_NUMBER.sub('', cell))
 
-      # line parsing complete
-      # postprocessing: escape special characters in latex
-      content = content.replace('&', '\\&')
+    # line parsing complete
+    # postprocessing: escape special characters in latex
+    content = content.replace('&', '\\&')
 
-      # copy template
-      tex_doc = str(template)
+    # insert individual values into the tex document
+    template = template.replace('(CONTENT)', content)
+    template = template.replace('(TOTAL_SCORE)', str(total_score))
+    template = template.replace('(MAX_SCORE)', str(max_score))
 
-      # insert individual values into the tex document
-      tex_doc = tex_doc.replace('(CONTENT)', content)
-      tex_doc = tex_doc.replace('(TOTAL_SCORE)', str(total_score))
-      tex_doc = tex_doc.replace('(MAX_SCORE)', str(max_score))
+    # yield template
+    yield template
 
-      # increment counter and define file names
-      counter += 1
-      tex_file = str(counter) + ".tex"
-      pdf_file = str(counter) + ".pdf"
 
-      # write current variant as temp file
-      with open(tex_file, 'w') as file:
-        file.write(tex_doc)
+def create_pdf(template, args):
+  """creates a single pdf file, as a merged series of individualized templates"""
 
-      # generate pdf from tex file
-      cmd = ['pdflatex', '-interaction', 'batchmode', tex_file]
-      proc = subprocess.Popen(cmd)
-      proc.communicate()
+  # we need a counter to name the temp PDF files
+  counter = 0
 
-      # check, if any latex errors
-      retcode = proc.returncode
-      if retcode != 0:
+  # Merger to collect the temp PDF files
+  merger = PyPDF2.PdfFileMerger()
 
-        # print error and halt
-        raise ValueError('Error {} executing command: {}'.format(retcode, ' '.join(cmd)))
+  # create temp directory
+  temp_dir = "temp" + str(time.time())
+  os.makedirs(temp_dir)
+  os.chdir(temp_dir)
 
-      # append temp file to merger
-      merger.append(pdf_file)
+  # iterate on the variants
+  for v in variants(template, args):
+
+    # increment counter
+    counter += 1
+
+    # write current variant as temp file
+    with open("{}.tex".format(counter), 'w') as file:
+      file.write(v)
+
+    # generate pdf from tex file
+    cmd = ['pdflatex', '-interaction', 'batchmode', "{}.tex".format(counter)]
+    proc = subprocess.Popen(cmd)
+    proc.communicate()
+
+    # check, if any latex errors
+    retcode = proc.returncode
+    if retcode != 0:
+
+      # print error and halt
+      raise ValueError('Error {} executing command: {}'.format(retcode, ' '.join(cmd)))
+
+    # append temp file to merger
+    merger.append("{}.pdf".format(counter))
 
   # CSV parsing complete
   # delete output file in case it exists
@@ -163,6 +182,18 @@ def main():
   with open(args.output, 'wb') as file:
     merger.write(file)
     shutil.rmtree(temp_dir)
+
+
+def main():
+
+  # parse command line arguments 
+  args = parse_args()
+
+  # read the tex doc
+  template = read_template()
+
+  # create pdf
+  create_pdf(template, args)
 
   # open the combined pdf containing all variants
   os.system('open ' + args.output)
