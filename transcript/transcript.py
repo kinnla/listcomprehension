@@ -77,7 +77,7 @@ def variants(template, args=None):
   """
 
   # read the CSV doc
-  with open(args.csvfile, encoding=args.encoding, newline='') as csvfile:
+  with open("../"+args.csvfile, encoding=args.encoding, newline='') as csvfile:
     reader = csv.reader(csvfile, delimiter=';')
     
     # read the first line containing the column headers
@@ -124,13 +124,12 @@ def variants(template, args=None):
     # postprocessing: escape special characters in latex
     content = content.replace('&', '\\&')
 
-    # insert individual values into the tex document
-    template = template.replace('(CONTENT)', content)
-    template = template.replace('(TOTAL_SCORE)', str(total_score))
-    template = template.replace('(MAX_SCORE)', str(max_score))
-
-    # yield template
-    yield template
+    # insert individual values into the tex document and then yield it
+    tex_doc = template
+    tex_doc = tex_doc.replace('(CONTENT)', content)
+    tex_doc = tex_doc.replace('(TOTAL_SCORE)', str(total_score))
+    tex_doc = tex_doc.replace('(MAX_SCORE)', str(max_score))
+    yield tex_doc
 
 
 def create_pdf(template, args):
