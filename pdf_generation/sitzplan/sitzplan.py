@@ -8,7 +8,7 @@ For help, run the script from command line with -h
 
 you need to run the script from the super directory and as a module.
 example:
->> python3 -m sitzplan.sitzplan sitzplan/example.csv -e mac-roman --hspacing [3,3] -t "Sitzplan"
+>> python3 -m sitzplan.sitzplan sitzplan/example.csv -e mac-roman --hspacing [3,3] -t Sitzplan -o sitzplan/Sitzplan
 
 Prerequisits:
 - latex

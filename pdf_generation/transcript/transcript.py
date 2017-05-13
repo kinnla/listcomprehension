@@ -7,7 +7,7 @@ For the specific CVS data format, see the sample file
 For help, run the script from command line with -h
 
 example:
->> python3 -m transcript.transcript transcript/WP9-Master.csv -e mac-roman
+>> python3 -m transcript.transcript WP9-Master.csv -e mac-roman
 
 Prerequisits:
 - latex
