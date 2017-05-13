@@ -28,7 +28,37 @@ def read_template(file_name):
   return template
 
 
-def create_pdf(template, args, variants):
+def create_pdf(tex_doc, file_name, keep_tex=True):
+  """
+  renders a tex document as pdf
+
+  tex_doc:    a string containing the TeX source
+  file_name:  a string containing the output file name (without .pdf)
+  keep_tex: a boolean indicating whether the tex file shall be kept
+  """
+
+  # create tex file
+  with open(file_name + ".tex", 'w') as file:
+    file.write(tex_doc)
+
+  # generate pdf from tex file
+  cmd = ['pdflatex', '-interaction', 'batchmode', file_name]
+  proc = subprocess.Popen(cmd)
+  proc.communicate()
+
+  # check, if any latex errors
+  retcode = proc.returncode
+  if retcode != 0:
+
+    # print error and halt
+    raise ValueError('Error {} executing command: {}'.format(retcode, ' '.join(cmd)))
+
+  # eventually delete tex file
+  if not keep_tex:
+    os.remove(file_name + ".tex")
+
+
+def create_pdf_series(template, args, variants):
   """
   creates a single pdf file, as a merged series of individualized templates.
 
@@ -54,24 +84,11 @@ def create_pdf(template, args, variants):
     # increment counter
     counter += 1
 
-    # write current variant as temp file
-    with open("{}.tex".format(counter), 'w') as file:
-      file.write(v)
-
-    # generate pdf from tex file
-    cmd = ['pdflatex', '-interaction', 'batchmode', "{}.tex".format(counter)]
-    proc = subprocess.Popen(cmd)
-    proc.communicate()
-
-    # check, if any latex errors
-    retcode = proc.returncode
-    if retcode != 0:
-
-      # print error and halt
-      raise ValueError('Error {} executing command: {}'.format(retcode, ' '.join(cmd)))
+    # create pdf
+    create_pdf(v, str(counter))
 
     # append temp file to merger
-    merger.append("{}.pdf".format(counter))
+    merger.append(str(counter) + '.pdf')
 
   # CSV parsing complete
   # delete output file in case it exists

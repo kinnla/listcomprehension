@@ -2,12 +2,12 @@
 # -*- coding: utf-8 -*-
 
 """
-This script produces a seating plan with the help of LaTeX.
-The data for the plan must be given as CSV file
+This script produces transcripts from a CSV file with the help of LaTeX.
+For the specific CVS data format, see the sample file
 For help, run the script from command line with -h
 
 example:
->> python3 sitzplan.py example.csv -e mac-roman --hspacing [3,3] -t "Sitzplan"
+>> python3 -m transcript.transcript transcript/WP9-Master.csv -e mac-roman
 
 Prerequisits:
 - latex
@@ -18,14 +18,9 @@ Prerequisits:
 
 import argparse
 import os
-#import subprocess
-#import PyPDF2
 import csv
 import locale
-#import ast
 import re
-#import time
-#import shutil
 
 from lib import util
 
@@ -67,7 +62,7 @@ def variants(template, args=None):
   """
 
   # read the CSV doc
-  with open("../"+args.csvfile, encoding=args.encoding, newline='') as csvfile:
+  with open("../" + args.csvfile, encoding=args.encoding, newline='') as csvfile:
     reader = csv.reader(csvfile, delimiter=';')
     
     # read the first line containing the column headers
@@ -144,8 +139,8 @@ def main():
   # read the tex doc
   template = util.read_template(os.path.realpath(__file__))
 
-  # create pdf
-  util.create_pdf(template, args, variants(template, args))
+  # create pdf series
+  util.create_pdf_series(template, args, variants(template, args))
 
   # open the combined pdf containing all variants
   os.system('open ' + args.output)
@@ -154,10 +149,10 @@ def main():
 if __name__ == "__main__":
     main()
 
-######################################################################
-# Below this comes the tex document as a multiline string            #
-# Please note that we need to define it as raw string through the \\ #
-######################################################################
+###########################################################
+# Below this comes the tex document as a multiline string #
+# We need to define it as raw string through the \\       #
+###########################################################
 
 r"""
 % Transcript. 

@@ -6,8 +6,9 @@ This script produces a seating plan with the help of LaTeX.
 The data for the plan must be given as CSV file
 For help, run the script from command line with -h
 
+you need to run the script from the super directory and as a module.
 example:
->> python3 sitzplan.py example.csv -e mac-roman --hspacing [3,3] -t "Sitzplan"
+>> python3 -m sitzplan.sitzplan sitzplan/example.csv -e mac-roman --hspacing [3,3] -t "Sitzplan"
 
 Prerequisits:
 - latex
@@ -24,34 +25,32 @@ import csv
 import locale
 import ast
 
-def main():
+from lib import util
 
-  # parse command line arguments
+def parse_args():
+  """parse command line arguments and return them as Namespace"""
+
   parser = argparse.ArgumentParser(
     description='Generates a Seating Plan, e.g. for a class room, based on a CSV spread sheet and generates a PDF.')
   parser.add_argument('csvfile', help='the csv file containing the input')
   parser.add_argument('-e', '--encoding', default=locale.getpreferredencoding(),
     help='the character encoding of the CSV file, e.g. mac-roman.')
-  parser.add_argument('-o', '--output', default=__file__+'.pdf',
-                   help='the output file name')
+  parser.add_argument('-o', '--output', default=__file__,
+                   help='the output file name. "pdf" as file extension will be automatically added.')
   parser.add_argument('-t', '--title', default='Seating Plan',
                    help='the document title')
   parser.add_argument('--hspacing', default='',
                    help='Horizontal spacing in milimeters, e.g. as [3,0,0,3] for a plan with 5 columns')
-  args = parser.parse_args()
+  return parser.parse_args()
+
+
+def main():
+
+  # parse command line arguments 
+  args = parse_args()
 
   # read the tex doc
-  with open(os.path.realpath(__file__), 'r') as file:
-
-    # skip lines until we read a latex comment marker
-    for line in file:
-      if len(line) > 0 and line[0] == '%': break
-
-    # add lines to the tex_doc until we read a python docstring marker
-    tex_doc = ""
-    for line in file:
-      if len(line) >= 3 and line[0:3] == '"""': break
-      tex_doc += line
+  tex_doc = util.read_template(os.path.realpath(__file__))
 
   # replace the document title
   tex_doc = tex_doc.replace('(TITLE)', args.title)
@@ -123,37 +122,19 @@ def main():
   # replace the matrix in the tex doc
   tex_doc = tex_doc.replace('(MATRIX)', matrix)
 
-  # write the tex doc
-  with open('temp.tex', 'w') as file:
-    file.write(tex_doc)
+  # render and open pdf file
+  util.create_pdf(tex_doc, args.output)
+  os.system('open ' + args.output + ".pdf")
 
-  # generate pdf from tex file
-  cmd = ['pdflatex', '-interaction', 'nonstopmode', 'temp.tex']
-  proc = subprocess.Popen(cmd)
-  proc.communicate()
-
-  # check, if any latex errors
-  retcode = proc.returncode
-  if retcode != 0:
-
-    # print error and halt
-    raise ValueError('Error {} executing command: {}'.format(retcode, ' '.join(cmd)))
-
-  # delete temp file
-  #os.remove('temp.tex')
-
-  # rename the pdf file and then open it
-  os.rename('temp.pdf', args.output)
-  os.system('open ' + args.output)
-
+  
 # execute only if run as a script
 if __name__ == "__main__":
     main()
 
-######################################################################
-# Below this comes the tex document as a multiline string            #
-# Please note that we need to define it as raw string through the \\ #
-######################################################################
+###########################################################
+# Below this comes the tex document as a multiline string #
+# We need to define it as raw string through the \\       #
+###########################################################
 
 r"""
 % Sitzplan. 
