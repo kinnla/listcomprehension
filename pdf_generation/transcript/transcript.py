@@ -206,7 +206,7 @@ Gymnasium Tiergarten, Schuljahr 2016/17\\
 \par\medskip
 \textbf{\Large Informatik Wahlpflicht, Klassenstufe 9}
 \par\medskip
-Übersicht über die mündliche Noten von \textbf{(STUDENT_NAME)}, Stand 11.5.2017\\
+Übersicht über die Abgaben von \textbf{(STUDENT_NAME)}, Stand 11.5.2017\\
 \par \medskip
 \end{centering}
 \hrule
