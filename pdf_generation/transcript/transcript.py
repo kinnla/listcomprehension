@@ -48,11 +48,21 @@ def parse_args():
   parser.add_argument('csvfile', help='the csv file containing the input')
   parser.add_argument('-e', '--encoding', default=locale.getpreferredencoding(),
     help='the character encoding of the CSV file, e.g. mac-roman or utf8.')
-  parser.add_argument('-s', '--studentname', 
+  parser.add_argument('-s', '--studentname', default='',
     help='the name of the student. If empty, transcripts for all students will be generated.')
   parser.add_argument('-o', '--output', default=__file__+'.pdf',
                    help='the output file name')
   return parser.parse_args()
+
+
+def compute_mark(percentage):
+  """computes the mark according to the percentage"""
+  if percentage <10: return '6 (ungenügend)'
+  if percentage <45: return '5 (mangelhaft)'
+  if percentage <60: return '4 (ausreichend)'
+  if percentage <75: return '3 (befriedigend)'
+  if percentage <90: return '2 (gut)'
+  return '1 (sehr gut)'
 
 
 def variants(template, args=None):
@@ -102,33 +112,48 @@ def variants(template, args=None):
         student_name = student_name + cell + ' '
         continue
 
-      # if start of a block, then add the project name
+      # if start of block: add table line and the project name
       if re.match(START_OF_BLOCK, col_name):
+        content += "\\\\\\hline\n"
         content += col_name
 
-      # if at the end or the start, add colum marker 
+      # if at the end or at the start, add colum marker. Add "Team:" if necessary
       if re.match(START_OF_BLOCK, col_name) or re.match(END_OF_BLOCK, col_name):
         content += '&'
+      elif cell:
+        content += ' Team: '
 
-      # in any case, add cell content
-      content = content + cell + ' '
+      # Add cell content. In case of a missing score: add '-'
+      content += cell
+      if re.match(END_OF_BLOCK, col_name) and cell == '':
+        content += '-'
       
-      # if end of block: add empty line, 
+      # if end of block: add maximum score
       if re.match(END_OF_BLOCK, col_name):
-        content += "\\\\\n"
-        content += "\hline\n"
+        if 'Zusatz' in col_name:
+          content += "/ *"
+        elif NON_NUMBER.sub('', col_name):
+          content += "/ " + NON_NUMBER.sub('', col_name)
 
       # if the cell contains a score, add it to the total score
       if re.match(SCORE, col_name) and NON_NUMBER.sub('', cell):
         total_score += int(NON_NUMBER.sub('', cell))
 
-    # insert individual values into the tex document and then yield it
+    # compute percentage
+    percentage = total_score * 100 // max_score
+    
+    # insert individual values into the tex document
     tex_doc = template
     tex_doc = tex_doc.replace('(STUDENT_NAME)', student_name)
     tex_doc = tex_doc.replace('(CONTENT)', content)
     tex_doc = tex_doc.replace('(TOTAL_SCORE)', str(total_score))
     tex_doc = tex_doc.replace('(MAX_SCORE)', str(max_score))
-    yield tex_doc
+    tex_doc = tex_doc.replace('(PERCENTAGE)', str(percentage))
+    tex_doc = tex_doc.replace('(MARK)', compute_mark(percentage))
+
+    # if want to print scores for this student, yield
+    if args.studentname in student_name:
+       yield tex_doc
 
 
 def main():
@@ -161,8 +186,13 @@ r"""
 \usepackage[a4paper, total={15cm, 25cm}]{geometry}
 \pagestyle{empty}
 \usepackage[utf8]{inputenc}
-\usepackage{graphicx}
-\usepackage{ifthen}
+
+\makeatletter
+\newcommand{\thickhline}{%
+    \noalign {\ifnum 0=`}\fi \hrule height 1pt
+    \futurelet \reserved@a \@xhline
+}
+\makeatother
 
 \begin{document}
 
@@ -177,19 +207,18 @@ Gymnasium Tiergarten, Schuljahr 2016/17\\
 \hrule
 \par\medskip
 \begin{centering}
-\begin{tabular}{|p{4cm}|p{8cm}|p{2cm}|}
+\begin{tabular}{|p{3.2cm}|p{8cm}|p{1.7cm}|}
 \hline
-\textbf{Abgabe} & \textbf{Bewertung} & \textbf{Punkte}\\
-\hline
-(CONTENT)
+\textbf{Abgabe} & \textbf{Bewertung} & \textbf{Punkte}
+(CONTENT)\\\thickhline
+ \multicolumn{2}{r}{\textbf{Gesamtpunktzahl:}} & \multicolumn{1}{l}{(TOTAL_SCORE) / (MAX_SCORE)}\\
 \end{tabular}
+\par\bigskip
+Das sind \textbf{(PERCENTAGE)\%} der Punkte und ergibt die Note \textbf{(MARK)}.
 \end{centering}
+\vfill
 \hrule
 \par\medskip
-\textbf{Gesamtpunktzahl}: (TOTAL_SCORE) von (MAX_SCORE)
-\par\medskip
-\hrule
-
-\footnotesize{* Zusatzaufgabe}
+\noindent\footnotesize{* Zusatzaufgabe}
 \end{document}
 """
