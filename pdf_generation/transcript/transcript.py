@@ -27,6 +27,9 @@ from lib import util
 # regex pattern, matches non number characters
 NON_NUMBER = re.compile(r'[\D]+')
 
+# regex pattern, matches characters neither dot nor digit
+NON_DOT_DIGIT = re.compile(r'[\D\.]+')
+
 # regex pattern, indicates the end of a block
 START_OF_BLOCK = re.compile(r'^(?!(Zusatzp|P)unkte|Team).*')
 
@@ -75,8 +78,9 @@ def variants(template, args=None):
   with open("../" + args.csvfile, encoding=args.encoding, newline='') as csvfile:
     reader = csv.reader(csvfile, delimiter=';')
     
-    # read the first line containing the column headers
+    # read the first line containing the column headers, and strip them.
     col_names = next(reader)
+    col_names = [s.strip() for s in col_names]
 
     # read other lines and store them in a list. Skip empty lines.
     lines = [line for line in reader if len(line) and line[0]]
@@ -104,18 +108,19 @@ def variants(template, args=None):
     for cell in line:
       col_name = next(col_names_iterator)
 
-      # preprocessing: escape special characters for latex
-      cell = cell.replace('&', '\\&')
+      # preprocessing: remove whitespace and escape special characters for latex
+      cell = cell.strip().replace('&', '\\&')
 
       # if cell is part of the student's name, then concatenate and continue
       if re.match(STUDENT_NAME, col_name):
         student_name = student_name + cell + ' '
         continue
 
-      # if start of block: add table line and the project name
+      # if start of block: add table line, project name and date
       if re.match(START_OF_BLOCK, col_name):
         content += "\\\\\\hline\n"
-        content += col_name
+        k = col_name.rfind(" ")
+        content = content + col_name[:k] + "&" + col_name[k+1:]
 
       # if at the end or at the start, add colum marker. Add "Team:" if necessary
       if re.match(START_OF_BLOCK, col_name) or re.match(END_OF_BLOCK, col_name):
@@ -207,11 +212,11 @@ Gymnasium Tiergarten, Schuljahr 2016/17\\
 \hrule
 \par\medskip
 \begin{centering}
-\begin{tabular}{|p{3.2cm}|p{8cm}|p{1.7cm}|}
+\begin{tabular}{|p{3.2cm}|p{1.4cm}|p{8cm}|p{1.4cm}|}
 \hline
-\textbf{Abgabe} & \textbf{Bewertung} & \textbf{Punkte}
+\textbf{Abgabe} & \textbf{Datum} & \textbf{Bewertung} & \textbf{Punkte}
 (CONTENT)\\\thickhline
- \multicolumn{2}{r}{\textbf{Gesamtpunktzahl:}} & \multicolumn{1}{l}{(TOTAL_SCORE) / (MAX_SCORE)}\\
+ \multicolumn{3}{r}{\textbf{Gesamtpunktzahl:}} & \multicolumn{1}{l}{(TOTAL_SCORE)/ (MAX_SCORE)}\\
 \end{tabular}
 \par\bigskip
 Das sind \textbf{(PERCENTAGE)\%} der Punkte und ergibt die Note \textbf{(MARK)}.
