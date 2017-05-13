@@ -95,58 +95,6 @@ def main():
 
 	# create PDF series
 	util.create_pdf_series(template, args, variants(template, args))
-	"""
-	# we need a counter to name the temp PDF files
-	counter = 0
-
-	# Merger to collect the temp PDF files
-	merger = PyPDF2.PdfFileMerger()
-
-	# create temp directory
-	temp_dir = "temp" + str(time.time())
-	os.makedirs(temp_dir)
-	os.chdir(temp_dir)
-
-	# iterate on the variants
-	for v in variants(tex_doc, args.variants):
-
-		# increment counter and define file names
-		counter += 1
-		tex_file = str(counter) + ".tex"
-		pdf_file = str(counter) + ".pdf"
-
-		# write current variant as temp file
-		with open(tex_file, 'w') as file:
-			file.write(v)
-
-		# generate pdf from tex file
-		cmd = ['pdflatex', '-interaction', 'batchmode', tex_file]
-		proc = subprocess.Popen(cmd)
-		proc.communicate()
-
-		# check, if any latex errors
-		retcode = proc.returncode
-		if retcode != 0:
-
-			# print error and halt
-		    raise ValueError('Error {} executing command: {}'.format(retcode, ' '.join(cmd)))
-
-		# compile again in order to produce the grade table
-		proc = subprocess.Popen(cmd)
-		proc.communicate()
-
-		# append temp file to merger
-		merger.append(pdf_file)
-
-	# delete output file in case it exists
-	if os.path.isfile(args.output):
-		os.remove(args.output)
-
-	# merge the pdf files, write the result and clean up
-	os.chdir("..")
-	with open(args.output, 'wb') as file:
-	    merger.write(file)
-	    shutil.rmtree(temp_dir)"""
 
 	# open the combined pdf containing all variants
 	os.system('open ' + args.output)
