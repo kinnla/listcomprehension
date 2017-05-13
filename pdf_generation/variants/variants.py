@@ -15,6 +15,9 @@ How to use:
 3. Define the dictionary replacements (top of the script)
 4. Run the script
 
+example:
+>> python3 -m variants.variants -v 10
+
 Prerequisits:
 - latex
 - python 3.x
@@ -29,11 +32,26 @@ import PyPDF2
 import time
 import shutil
 
-def variants(tex_doc, n=1):
+from lib import util
+
+
+def parse_args():
+	"""parse command line arguments and return them as Namespace"""
+
+	parser = argparse.ArgumentParser(
+		description='Generates variants from an embedded tex doc and compiles them to a combined PDF.')
+	parser.add_argument('-v', '--variants', default='1', type=int,
+                   help='the number of variants to be created')
+	parser.add_argument('-o', '--output', default=__file__+'.pdf',
+                   help='the output file name')
+	return parser.parse_args()
+
+
+def variants(tex_doc, args):
 	""" Generates variants of a tex documents
 
 	tex_doc -- the tex document as a string
-	n -- the number of variants to be generated (default 1)
+	args -- the command line options as a Namespace object
 	"""
 
 	# additional contents for the replacements dictionary
@@ -50,7 +68,7 @@ def variants(tex_doc, n=1):
 	}
 
 	# loop n times
-	for i in range(n):
+	for i in range(args.variants):
 
 		# create a variant of the tex document
 		# don't need to clone here, as replace will generate a copy
@@ -70,27 +88,14 @@ def variants(tex_doc, n=1):
 def main():
 
 	# parse command line arguments
-	parser = argparse.ArgumentParser(
-		description='Generates variants from an embedded tex doc and compiles them to a combined PDF.')
-	parser.add_argument('-v', '--variants', default='1', type=int,
-                   help='the number of variants to be created')
-	parser.add_argument('-o', '--output', default=__file__+'.pdf',
-                   help='the output file name')
-	args = parser.parse_args()
+	args = parse_args()
 
 	# read the tex doc
-	with open(os.path.realpath(__file__), 'r') as file:
+	template = util.read_template(__file__)
 
-		# skip lines until we read a latex comment marker
-		for line in file:
-			if len(line) > 0 and line[0] == '%': break
-
-		# add lines to the tex_doc until we read a python docstring marker
-		tex_doc = ""
-		for line in file:
-			if len(line) >= 3 and line[0:3] == '"""': break
-			tex_doc += line
-
+	# create PDF series
+	util.create_pdf_series(template, args, variants(template, args))
+	"""
 	# we need a counter to name the temp PDF files
 	counter = 0
 
@@ -141,7 +146,7 @@ def main():
 	os.chdir("..")
 	with open(args.output, 'wb') as file:
 	    merger.write(file)
-	    shutil.rmtree(temp_dir)
+	    shutil.rmtree(temp_dir)"""
 
 	# open the combined pdf containing all variants
 	os.system('open ' + args.output)
