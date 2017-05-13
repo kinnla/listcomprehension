@@ -1,14 +1,18 @@
-*.class
+## misc
+.DS_Store
 .project
 .classpath
 .cvsignore
 CVS/
 
-# Package Files #
+## java
+*.class
 *.jar
 *.war
 *.ear
-.DS_Store
+
+## python
+__pycache__/
 
 ## Core latex/pdflatex auxiliary files:
 *.aux
