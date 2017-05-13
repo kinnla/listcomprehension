@@ -18,14 +18,16 @@ Prerequisits:
 
 import argparse
 import os
-import subprocess
-import PyPDF2
+#import subprocess
+#import PyPDF2
 import csv
 import locale
-import ast
+#import ast
 import re
-import time
-import shutil
+#import time
+#import shutil
+
+from lib import util
 
 # regex pattern, matches non number characters
 NON_NUMBER = re.compile(r'[\D]+')
@@ -56,26 +58,6 @@ def parse_args():
   parser.add_argument('-o', '--output', default=__file__+'.pdf',
                    help='the output file name')
   return parser.parse_args()
-
-
-def read_template():
-  """reads the tex content from this file and returns it as a string"""
- 
-  # open file
-  with open(os.path.realpath(__file__), 'r') as file:
-
-    # skip lines until we read a latex comment marker
-    for line in file:
-      if len(line) > 0 and line[0] == '%': break
-
-    # add lines to the template until we read a python docstring marker
-    template = ""
-    for line in file:
-      if len(line) >= 3 and line[0:3] == '"""': break
-      template += line
-
-  # return template
-  return template
 
 
 def variants(template, args=None):
@@ -154,67 +136,16 @@ def variants(template, args=None):
     yield tex_doc
 
 
-def create_pdf(template, args):
-  """creates a single pdf file, as a merged series of individualized templates"""
-
-  # we need a counter to name the temp PDF files
-  counter = 0
-
-  # Merger to collect the temp PDF files
-  merger = PyPDF2.PdfFileMerger()
-
-  # create temp directory
-  temp_dir = "temp" + str(time.time())
-  os.makedirs(temp_dir)
-  os.chdir(temp_dir)
-
-  # iterate on the variants
-  for v in variants(template, args):
-
-    # increment counter
-    counter += 1
-
-    # write current variant as temp file
-    with open("{}.tex".format(counter), 'w') as file:
-      file.write(v)
-
-    # generate pdf from tex file
-    cmd = ['pdflatex', '-interaction', 'batchmode', "{}.tex".format(counter)]
-    proc = subprocess.Popen(cmd)
-    proc.communicate()
-
-    # check, if any latex errors
-    retcode = proc.returncode
-    if retcode != 0:
-
-      # print error and halt
-      raise ValueError('Error {} executing command: {}'.format(retcode, ' '.join(cmd)))
-
-    # append temp file to merger
-    merger.append("{}.pdf".format(counter))
-
-  # CSV parsing complete
-  # delete output file in case it exists
-  if os.path.isfile(args.output):
-    os.remove(args.output)
-
-  # merge the pdf files, write the result and clean up
-  os.chdir("..")
-  with open(args.output, 'wb') as file:
-    merger.write(file)
-    shutil.rmtree(temp_dir)
-
-
 def main():
 
   # parse command line arguments 
   args = parse_args()
 
   # read the tex doc
-  template = read_template()
+  template = util.read_template(os.path.realpath(__file__))
 
   # create pdf
-  create_pdf(template, args)
+  util.create_pdf(template, args, variants(template, args))
 
   # open the combined pdf containing all variants
   os.system('open ' + args.output)
