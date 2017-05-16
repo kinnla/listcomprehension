@@ -60,7 +60,7 @@ def create_pdf(tex_doc, file_name, keep_tex=True):
     os.remove(file_name + ".tex")
 
 
-def create_pdf_series(template, args, variants):
+def create_pdf_series(template, args, variants, src_dir=None):
   """
   creates a single pdf file, as a merged series of individualized templates.
 
@@ -78,6 +78,15 @@ def create_pdf_series(template, args, variants):
   # create temp directory
   temp_dir = "temp" + str(time.time())
   os.makedirs(temp_dir)
+
+  # copy resources, if necessary
+  if src_dir:
+    for file_name in os.listdir(src_dir):
+      full_file_name = os.path.join(src_dir, file_name)
+      if os.path.isfile(full_file_name):
+          shutil.copy(full_file_name, temp_dir)
+
+  # change working dir
   os.chdir(temp_dir)
 
   # iterate on the variants
