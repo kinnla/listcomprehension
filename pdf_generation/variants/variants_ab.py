@@ -2,21 +2,20 @@
 # -*- coding: utf-8 -*-
 
 """
-This file is a hybrid:
-- a python script that produces variants of a tex doc and compiles them to a single pdf
-- an embedded tex document with string markers
-
-You can use it to produce unique versions of work sheets or tests. 
-This file contains a fake math test as an example.
-
+This skript creates two variants of a tex file by and compiles them to a single pdf.
 How to use:
-1. Paste your tex doc below the script (### note the comment marker ###)
-2. Insert markers to your tex doc that you want to replace
-3. Define the dictionary replacements (top of the script)
-4. Run the script
+
+1. edit you tex file and include variants
+  - *A* marks the start of variant A
+  - *** delimits variants A and B
+  - *B* marks the end of variant B
+  - example: *A*it's night time in Berlin***it's day time in Berlin*B*
+
+2. Run the script
+  - python3 variants_ab 
 
 example:
->> python3 -m variants.variants_ab exam.tex
+>> python3 variants_ab test_ab.tex
 
 Prerequisits:
 - latex
@@ -34,6 +33,7 @@ import shutil
 import re
 import sys
 
+# a symlink to lib is contained in the git repository
 from lib import util
 
 def parse_args():
