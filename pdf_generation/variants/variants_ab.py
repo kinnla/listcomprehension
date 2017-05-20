@@ -42,8 +42,7 @@ def parse_args():
 	parser = argparse.ArgumentParser(
 		description='Generates variants from an embedded tex doc and compiles them to a combined PDF.')
 	parser.add_argument('texfile', help='the tex file where the two variants shall be created for')
-	parser.add_argument('-o', '--output', default=__file__+'.pdf',
-                   help='the output file name')
+	parser.add_argument('-o', '--output', help='the output file name')
 	return parser.parse_args()
 
 
@@ -58,8 +57,10 @@ def variants(tex_doc):
 
 def main():
 
-	# parse command line arguments
+	# parse command line arguments and eventually include output path
 	args = parse_args()
+	if not args.output:
+		args.output = args.texfile.replace('.tex','.pdf')
 
 	# read the tex doc
 	with open(args.texfile, 'r') as file:
