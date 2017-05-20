@@ -6,9 +6,8 @@ This script produces a seating plan with the help of LaTeX.
 The data for the plan must be given as CSV file
 For help, run the script from command line with -h
 
-you need to run the script from the super directory and as a module.
 example:
->> python3 -m sitzplan.sitzplan sitzplan/example.csv -e mac-roman --hspacing [3,3] -t Sitzplan -o sitzplan/Sitzplan
+>> python3 sitzplan.py example.csv -e mac-roman --hspacing [3,3] -t Sitzplan -o Sitzplan
 
 Prerequisits:
 - latex
@@ -25,6 +24,7 @@ import csv
 import locale
 import ast
 
+# symlink to library contained in repository
 from lib import util
 
 def parse_args():

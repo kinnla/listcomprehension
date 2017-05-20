@@ -16,7 +16,7 @@ How to use:
 4. Run the script
 
 example:
->> python3 -m variants.variants -v 10
+>> python3 variants.py -v 10
 
 Prerequisits:
 - latex
@@ -32,6 +32,7 @@ import PyPDF2
 import time
 import shutil
 
+# symlink to library contained in repository
 from lib import util
 
 

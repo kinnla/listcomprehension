@@ -7,7 +7,7 @@ For the specific CVS data format, see the sample file
 For help, run the script from command line with -h
 
 example:
->> python3 -m transcript.transcript WP9-Master.csv -e mac-roman
+>> python3 transcript.py Abgaben.csv -e utf8
 
 Prerequisits:
 - latex
@@ -22,6 +22,7 @@ import csv
 import locale
 import re
 
+# symlink to library contained in repository
 from lib import util
 
 # regex pattern, matches non number characters
