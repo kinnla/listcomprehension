@@ -12,7 +12,7 @@ How to use:
   - example: *A*it's night time in Berlin***it's day time in Berlin*B*
 
 2. Run the script
-  - python3 variants_ab variants_ab test_ab.tex
+$ python3 variants_ab test_ab.tex
 
 Prerequisits:
 - latex
