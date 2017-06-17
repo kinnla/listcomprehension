@@ -10,7 +10,7 @@ example:
 >> python3 sitzplan.py example.csv -e mac-roman --hspacing [3,3] -t Sitzplan -o Sitzplan
 
 Prerequisits:
-- latex
+- XeTeX
 - python 3.x
 - PyPDF2 python module
 - tested on macOS
@@ -35,7 +35,7 @@ def parse_args():
   parser.add_argument('csvfile', help='the csv file containing the input')
   parser.add_argument('-e', '--encoding', default=locale.getpreferredencoding(),
     help='the character encoding of the CSV file, e.g. mac-roman.')
-  parser.add_argument('-o', '--output', default=__file__,
+  parser.add_argument('-o', '--output',
                    help='the output file name. "pdf" as file extension will be automatically added.')
   parser.add_argument('-t', '--title', default='Seating Plan',
                    help='the document title')
@@ -122,6 +122,10 @@ def main():
   # replace the matrix in the tex doc
   tex_doc = tex_doc.replace('(MATRIX)', matrix)
 
+  # check output file name
+  if not args.output:
+    args.output = args.csvfile
+
   # render and open pdf file
   util.create_pdf(tex_doc, args.output)
   os.system('open ' + args.output + ".pdf")
@@ -142,8 +146,7 @@ r"""
 
 \documentclass{scrartcl}
 \usepackage[a4paper, landscape, total={25cm, 18cm}]{geometry}
-\thispagestyle{empty}
-\usepackage[utf8]{inputenc}
+\usepackage{fontspec}
 \usepackage{bbding}
 \usepackage{graphicx}
 \usepackage{ifthen}
@@ -157,6 +160,8 @@ r"""
     align=center,
     minimum height=4\baselineskip
 }}
+
+\thispagestyle{empty}
 
 \begin{document}
 \begin{center}
