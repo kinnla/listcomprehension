@@ -10,7 +10,7 @@ example:
 >> python3 transcript.py Abgaben.csv -e utf8
 
 Prerequisits:
-- latex
+- XeLaTeX
 - python 3.x
 - PyPDF2 python module
 - tested on macOS
@@ -110,7 +110,7 @@ def variants(template, args=None):
       col_name = next(col_names_iterator)
 
       # preprocessing: remove whitespace and escape special characters for latex
-      cell = cell.strip().replace('&', '\\&')
+      cell = cell.strip().replace('&', '\\&').replace('_', '\\_')
 
       # if cell is part of the student's name, then concatenate and continue
       if re.match(STUDENT_NAME, col_name):
@@ -186,12 +186,14 @@ if __name__ == "__main__":
 ###########################################################
 
 r"""
+% !TEX TS-program = xelatex
+% !TEX encoding = UTF-8 Unicode
 % Transcript. 
 
 \documentclass [a4paper, 11pt] {article}
 \usepackage[a4paper, total={15cm, 25cm}]{geometry}
 \pagestyle{empty}
-\usepackage[utf8]{inputenc}
+\usepackage{fontspec}
 
 \makeatletter
 \newcommand{\thickhline}{%
@@ -207,7 +209,7 @@ Gymnasium Tiergarten, Schuljahr 2016/17\\
 \par\medskip
 \textbf{\Large Informatik Wahlpflicht, Klassenstufe 9}
 \par\medskip
-Übersicht über die Abgaben von \textbf{(STUDENT_NAME)}, Stand 11.5.2017\\
+Übersicht über die Abgaben von \textbf{(STUDENT_NAME)} im 2. Halbjahr 2017/18, ausgegeben am 21.6.2017\\
 \par \medskip
 \end{centering}
 \hrule
@@ -220,7 +222,7 @@ Gymnasium Tiergarten, Schuljahr 2016/17\\
  \multicolumn{3}{r}{\textbf{Gesamtpunktzahl:}} & \multicolumn{1}{l}{(TOTAL_SCORE)/ (MAX_SCORE)}\\
 \end{tabular}
 \par\bigskip
-Das sind \textbf{(PERCENTAGE)\%} der Punkte und ergibt die Note \textbf{(MARK)}.
+Das sind \textbf{(PERCENTAGE)\%} und ergibt die Note \textbf{(MARK)}.
 \end{centering}
 \vfill
 \hrule
