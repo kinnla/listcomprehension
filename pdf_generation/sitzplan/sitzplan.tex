@@ -1,0 +1,118 @@
+% !TEX TS-program = lualatex
+% Layout based on http://texwelt.de/wissen/fragen/13193/kommentierter-sitzplan-mit-tikz
+
+\documentclass[11pt]{article}
+\usepackage[a4paper, landscape, total={25cm, 18cm}]{geometry}
+\usepackage{fontspec}
+\usepackage{bbding}
+\usepackage{graphicx}
+\usepackage{ifthen}
+\usepackage{luacode}
+\usepackage{tikz}
+
+\usetikzlibrary{matrix}
+\tikzset{
+  platz/.style={
+    draw,
+    text width=3cm,
+    align=center,
+    minimum height=3.5\baselineskip
+}}
+\errorcontextlines=1000
+\begin{luacode*}
+function test()
+
+	-- open file
+    local file = assert(io.open('/Users/zoppke/_repos/schule/pdf_generation/sitzplan/example.csv', "r")) 
+
+	-- create matrix and store data
+   	matrix = {}
+	max_row = 0
+	max_col = 0
+	keys = nil
+    for line in file:lines() do
+        fields = line:split(';')
+        if not keys then 
+        	keys = {}
+        	for i=1, #fields do
+        		keys[fields[i]] = i
+			end
+		else
+	        row = tonumber(fields[keys['row']])
+    	    max_row = math.max(max_row, row)
+        	col = tonumber(fields[keys['column']])
+        	max_col = math.max(max_col, col)
+                
+	        -- store in matrix
+    	    matrix[row] = matrix[row] or {}
+        	if matrix[row][col] then -- consistency check
+        		tex.sprint("ERROR: Two people can not sit on the same place")
+			end
+    	    matrix[row][col] = fields
+		end
+    end
+    
+    -- output
+    for row=0, max_row do
+    	for col=0, max_col do
+	
+			-- if not the first column, add the column separator
+			if col > 0 then
+				tex.sprint("&")
+				
+				-- if on the first row, add spacing
+				if row == 0 then			        
+		        	tex.sprint("[3mm]")
+				end
+			end
+			
+      		-- find the eventual person sitting on this place
+      		person = matrix[row][col]
+	      	
+			-- create a desk (matrix node), if anybody sits here
+			if person then
+        		tex.sprint('{')
+		
+				-- add person
+		 		tex.sprint(person[keys['name']] .. "\\\\")
+
+		        -- create hands, if given
+        		if person[keys['hands']] then
+          			hands = tonumber(person[keys['hands']])
+          			tex.sprint(string.rep("{\\scalebox{.7}{\\rotatebox[x=0mm, y=4mm]{-90}{\\HandLeft}}}", hands))
+          			tex.sprint("~~")
+				end
+				
+        		-- add string, if given
+        		if person[keys['string']] then
+          			tex.sprint(person[keys['string']])
+				end
+
+				-- complete desk (matrix node)
+				tex.sprint('}')
+			end
+		end
+
+	    -- end one line
+    	tex.sprint("\\\\")
+	end	
+end
+\end{luacode*}
+
+\begin{document}
+\thispagestyle{empty}
+\begin{center}
+{\Large \textbf{Sitzplan}} %adjust document title if necessary
+\par\medskip
+\noindent\begin{tikzpicture}
+  \matrix(sitzplan)[
+      matrix of nodes,
+      row sep=3mm,
+      column sep=-\pgflinewidth,
+%      nodes in empty cells,
+      nodes={platz,anchor=center}
+    ]{\luadirect{test()}};
+\end{tikzpicture}
+
+\end{center}
+\end{document}
