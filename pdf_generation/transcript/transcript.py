@@ -61,12 +61,29 @@ def parse_args():
 
 def compute_mark(percentage):
   """computes the mark according to the percentage"""
-  if percentage <10: return '6 (ungenügend)'
-  if percentage <45: return '5 (mangelhaft)'
-  if percentage <60: return '4 (ausreichend)'
-  if percentage <75: return '3 (befriedigend)'
-  if percentage <90: return '2 (gut)'
-  return '1 (sehr gut)'
+#  if percentage <10: return '6 (ungenügend)'
+#  if percentage <45: return '5 (mangelhaft)'
+#  if percentage <60: return '4 (ausreichend)'
+#  if percentage <75: return '3 (befriedigend)'
+#  if percentage <90: return '2 (gut)'
+#  return '1 (sehr gut)'
+
+  if percentage <9: return '0 Punkte (6)'
+  if percentage <18: return '1 Punkte (5-)'
+  if percentage <27: return '2 Punkte (5)'
+  if percentage <36: return '3 Punkte (5+)'
+  if percentage <45: return '4 Punkte (4-)'
+  if percentage <50: return '5 Punkte (4)'
+  if percentage <55: return '6 Punkte (4+)'
+  if percentage <60: return '7 Punkte (3-)'
+  if percentage <65: return '8 Punkte (3)'
+  if percentage <70: return '9 Punkte (3+)'
+  if percentage <75: return '10 Punkte (2-)'
+  if percentage <80: return '11 Punkte (2)'
+  if percentage <85: return '12 Punkte (2+)'
+  if percentage <90: return '13 Punkte (1-)'
+  if percentage <95: return '14 Punkte (1)'
+  return '15 Punkte (1+)'
 
 
 def variants(template, args=None):
