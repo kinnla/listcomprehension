@@ -158,7 +158,7 @@ r"""
     draw,
     text width=3cm,
     align=center,
-    minimum height=3.5\baselineskip
+    minimum height=3.8\baselineskip
 }}
 
 \thispagestyle{empty}
