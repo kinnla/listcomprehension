@@ -51,7 +51,6 @@ def parse_args():
     description='Generates a transcript, based on a CSV spread sheet and generates a PDF.')
   parser.add_argument('csvfile', help='the csv file containing the input')
   parser.add_argument('-e', '--encoding', default=locale.getpreferredencoding(),
-    help='the character encoding of the CSV file, e.g. mac-roman or utf8.')
   parser.add_argument('-s', '--studentname', default='',
     help='the name of the student. If empty, transcripts for all students will be generated.')
   parser.add_argument('-o', '--output', default=__file__+'.pdf',
@@ -61,14 +60,14 @@ def parse_args():
 
 def compute_mark(percentage):
   """computes the mark according to the percentage"""
-#  if percentage <10: return '6 (ungenügend)'
-#  if percentage <45: return '5 (mangelhaft)'
-#  if percentage <60: return '4 (ausreichend)'
-#  if percentage <75: return '3 (befriedigend)'
-#  if percentage <90: return '2 (gut)'
-#  return '1 (sehr gut)'
+  if percentage <10: return '6 (ungenügend)'
+  if percentage <45: return '5 (mangelhaft)'
+  if percentage <60: return '4 (ausreichend)'
+  if percentage <75: return '3 (befriedigend)'
+  if percentage <90: return '2 (gut)'
+  return '1 (sehr gut)'
 
-  if percentage <9: return '0 Punkte (6)'
+"""  if percentage <9: return '0 Punkte (6)'
   if percentage <18: return '1 Punkte (5-)'
   if percentage <27: return '2 Punkte (5)'
   if percentage <36: return '3 Punkte (5+)'
@@ -83,7 +82,7 @@ def compute_mark(percentage):
   if percentage <85: return '12 Punkte (2+)'
   if percentage <90: return '13 Punkte (1-)'
   if percentage <95: return '14 Punkte (1)'
-  return '15 Punkte (1+)'
+  return '15 Punkte (1+)'"""
 
 
 def variants(template, args=None):
@@ -222,11 +221,11 @@ r"""
 \begin{document}
 
 \begin{centering}
-Gymnasium Tiergarten, Schuljahr 2016/17\\
+Gymnasium Tiergarten, Schuljahr 2017/18\\
 \par\medskip
-\textbf{\Large Informatik Wahlpflicht, Klassenstufe 9}
+\textbf{\Large Informatik Wahlpflicht, Klassenstufe 10}
 \par\medskip
-Übersicht über die Abgaben von \textbf{(STUDENT_NAME)} im 2. Halbjahr 2017/18, ausgegeben am 21.6.2017\\
+Übersicht über die Abgaben von \textbf{(STUDENT_NAME)} im 1. Halbjahr 2017/18, Stand: 21.12.2017\\
 \par \medskip
 \end{centering}
 \hrule
@@ -239,8 +238,18 @@ Gymnasium Tiergarten, Schuljahr 2016/17\\
  \multicolumn{3}{r}{\textbf{Gesamtpunktzahl:}} & \multicolumn{1}{l}{(TOTAL_SCORE)/ (MAX_SCORE)}\\
 \end{tabular}
 \par\bigskip
-Das sind \textbf{(PERCENTAGE)\%} und ergibt die Note \textbf{(MARK)}.
+Das sind \textbf{(PERCENTAGE)\%} und enspricht der Note \textbf{(MARK)}.
 \end{centering}
+
+Die Abgaben fließen zu $\frac{1}{3}$ in den mündlichen Teil der Halbjahresnote mit ein. 
+Bitte überprüfe, ob Deine Abgaben richtig vermerkt sind.
+
+Die letzten beiden Aufgaben auf der Liste (ein Python Programm, Caesar) kannst Du noch bis 16.1. überarbeiten.
+Ebenfalls bis 16.1. kannst Du noch Aufgaben nachreichen, wenn Du im Unterricht entschuldigt gefehlt hast.
+Vermerke dies auf dem Übersichtsblatt und gib es dem Lehrer am 16.1. zurück.
+Für das Halbjahreszeugnis können die Änderungen voraussichtlich nicht mehr berücksichtigt werden,
+sie zählen jedoch in jedem Fall für das Abschlusszeugnis.
+
 \vfill
 \hrule
 \par\medskip
