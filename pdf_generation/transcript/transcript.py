@@ -51,6 +51,7 @@ def parse_args():
     description='Generates a transcript, based on a CSV spread sheet and generates a PDF.')
   parser.add_argument('csvfile', help='the csv file containing the input')
   parser.add_argument('-e', '--encoding', default=locale.getpreferredencoding(),
+    help='the character encoding of the CSV file, e.g. mac-roman or utf8 or utf-8-sig.')
   parser.add_argument('-s', '--studentname', default='',
     help='the name of the student. If empty, transcripts for all students will be generated.')
   parser.add_argument('-o', '--output', default=__file__+'.pdf',
