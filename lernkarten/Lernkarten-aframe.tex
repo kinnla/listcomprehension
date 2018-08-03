@@ -1,0 +1,64 @@
+% !TEX TS-program = xelatex
+% !TEX encoding = UTF-8 Unicode
+\documentclass [ngerman,11pt]{article}
+\usepackage[a4paper, top=1cm, bottom=1cm, left=2cm, right=1cm]{geometry}
+\usepackage[ngerman]{babel}
+\usepackage{fontspec}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage[many]{tcolorbox}
+\usepackage{fillwith}
+\fillwithset{style=rule}
+\usepackage{siunitx}
+\sisetup{output-decimal-marker = {,}}
+
+\definecolor{shadecolor}{gray}{.85}
+\pagestyle{empty}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%% command definitions
+\newcommand{\card}[2]{
+\tcboxfit[width=18cm,height=8cm,nobeforeafter,before=\noindent,colback=white]{ 
+\begin{minipage}[t][7.3cm][t]{0.482\linewidth}
+{\bfseries #1}\\ #2  
+\end{minipage}\hspace{3mm}\vline 
+}}
+
+\let\oldenumerate\enumerate
+\renewcommand{\enumerate}{
+\oldenumerate[wide, labelwidth=!, labelindent=0pt]
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%% document
+\begin{document}
+
+\begin{center}
+{\bfseries\sffamily \Large\bf Lernkarten A-FRAME}\\[2mm]
+von Till Zoppke
+
+\end{center}
+\hrule
+\medskip
+
+Die Lernkarten wurden erstellt für den Ferienkurs ``ProInformatik V'', 6.-10. August 2018, an der Freien Universität Berlin.
+
+Die Karten gliedern sich in verschiedene Kapitel.
+\pagebreak
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%% cards
+
+\card{Werkzeuge: Firefox Browser}{
+Wir entwickeln ein Internet-Projekt. Oder genauer: eine Website im World-Wide-Web, auf der VR-Inhalte dargestellt werden. Seit der Erfindung des World-Wide-Web hat sich der Web-Browser als Programm zur Darstellung von Websites herausgebildet. Er kann den Seitenquelltext interpretieren und die Seite für den Nutzer darstellen. Für unser Projekt nutzen wir den Webbrowser Firefox. 
+\begin{enumerate}
+\item Recherchieren Sie im Internet, welche Eigenschaften der Firefox gegenüber anderen Browsern hat, die für unser Projekt vorteilhaft sein könnten.
+\item Argumentieren Sie, welchen Sinn es macht, dass wir uns im Projekt auf einen Standard-Browser einigen.
+\end{enumerate}
+}
+
+\vfill
+
+\tcboxfit[width=18cm,height=8cm,nobeforeafter,
+  before=\noindent]{
+}
+
+\end{document}
