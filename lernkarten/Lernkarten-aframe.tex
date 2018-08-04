@@ -12,13 +12,34 @@
 \usepackage{parskip}
 \usepackage{siunitx}
 \sisetup{output-decimal-marker = {,}}
+\usepackage{listings}
+\tcbuselibrary{listings, breakable, skins}
+\lstset{ %
+language=HTML,
+%selectfont\ttfamily,                % choose the language of the code
+basicstyle=\footnotesize,       % the size of the fonts that are used for the code
+numbers=none,                   % where to put the line-numbers
+%numberstyle=\footnotesize,      % the size of the fonts that are used for the line-numbers
+%stepnumber=1,                   % the step between two line-numbers. If it is 1 each line will be numbered
+%numbersep=5pt,                  % how far the line-numbers are from the code
+%backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
+showspaces=false,               % show spaces adding particular underscores
+showstringspaces=false,         % underline spaces within strings
+showtabs=false,                 % show tabs within strings adding particular underscores
+frame=single,           % adds a frame around the code
+tabsize=2,          % sets default tabsize to 2 spaces
+captionpos=b,           % sets the caption-position to bottom
+breaklines=true,        % sets automatic line breaking
+breakatwhitespace=false,    % sets if automatic breaks should only happen at whitespace
+escapeinside={\%*}{*)}          % if you want to add a comment within your code
+}
 
 \definecolor{shadecolor}{gray}{.85}
 \pagestyle{empty}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% command definitions
 \newcommand{\card}[3]{
-\tcboxfit[width=18cm,height=8cm,nobeforeafter,before=\noindent,colback=white]{
+\vfill\tcboxfit[width=18cm,height=8cm,nobeforeafter,before=\noindent,colback=white]{
 \begin{tabular}{ p{0.475\linewidth} | p{0.475\linewidth}} 
 \begin{minipage}[t]{\linewidth}%
 {\bfseries #1}%
@@ -27,6 +48,7 @@
 \end{minipage}%
 &
 \begin{minipage}[t]{\linewidth}%
+\par\setlength{\parskip}{6pt}%
 #3%
 \end{minipage}%
 \end{tabular}
@@ -55,6 +77,13 @@ Die Lernkarten wurden erstellt für den Ferienkurs ``ProInformatik V'', 6.-10. A
 Die Karten sind nach Themen gegliedert. Zu den Karten gibt es auch einen Spielplan, auf dem die Lernenden ihren Fortschritt mit einer Spielfigur markieren können.
 
 Jede Lernkarte bietet eine oder mehrere Aufgaben zur Lernkontrolle und Raum für Notizen. Die Lernenden sammeln die Lernkarten in einem Hefter und haben so Unterlagen aus dem Kurs. So wie Kontoauszüge symbolisieren die Karten den Lernfortschritt der Lernenden. Mit jeder bearbeiteten Lernkarte zahlen sie auf ihr Wissenskonto ein.
+
+Zu den Lernkarten gibt es eine Website. Diese enthält die auf den Lernkarten angegebenen Links, so dass die Lernenden diese nicht abtippen müssen.
+
+Auf der Checkliste sind alle Lernkarten verzeichnet. Die Lernenden können abhaken, wenn sie eine Karte erledigt haben. Ihr Ergebnis sollen Sie dem Kursleiter, dem Tutor oder einem anderen Lernenden zeigen, der dann abzeichnet, dass die Aufgabe gelöst wurde (Vier-Augen-Prinzip).
+
+\vfill
+\includegraphics[width=2cm]{CC-BY-SA}
 \pagebreak
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% cards
@@ -68,11 +97,59 @@ Wir entwickeln ein Internet-Projekt. Oder genauer: eine Website im World-Wide-We
 {}}
 
 \card{Werkzeuge: git \& github}{ %%%
-Sie kennen es von Ihrem Handy: ständig kommen neue Versionen des Betriebssystems und von Apps heraus, die neue Features, Verbesserungen oder Bugfixes enthalten. Für Verwaltung des Sourcecodes nutzen Softwareentwickler ein Werkzeug vom Typ \underline{Versionsverwaltung}. Diese führt über alle Änderungen Buch und ermöglicht es, Patches zu generieren und auf ältere Versionen einer Datei zurückzugreifen.
-
+Sie kennen es von Ihrem Handy: ständig kommen neue Versionen des Betriebssystems und von Apps heraus, die neue Features, Verbesserungen oder Bugfixes enthalten. Für Verwaltung des Sourcecodes nutzen Softwareentwickler ein Werkzeug vom Typ \underline{Versionsverwaltung}. Diese führt über alle Änderungen Buch und ermöglicht es, Patches zu generieren und auf ältere Versionen einer Datei zurückzugreifen.\par
 Die zur Zeit populärste Webplattform für Softwareprojekte namens {\bfseries github} basiert auf einer Versionsverwaltung namens {\bfseries git}. In diesem Projekt werden wir auf eine Versionsverwaltung verzichten, um die Einarbeitungszeit zu sparen. Wir benötigen jedoch einen github-Account, um den Online-Editor {\bfseries glitch} benutzen zu können.}
 {\begin{enumerate}
 \item Öffnen Sie \url{https://github.com} im Browser und registrieren Sie sich für einen Account.
+\item Schauen Sie nach, an welchen Projekten Ihr Kursleiter in den letzten beiden Wochen gearbeitet hat.
+\end{enumerate}}
+
+\card{Werkzeuge: glitch}{ %%%
+Auf der Plattform {\bfseries glitch} lassen sich Web-Projekte entwickeln und teilen. Der Online-Editor mit Syntax-Highlighting für gängige Programmier- und Auszeichnungssprachen (HTML, JavaScript, CSS$\ldots$) ermöglicht mehreren Leuten kollaborative Zusammenarbeit an der gleichen Datei. Mit der Funktion ``Live'' wird das Projekt auf einem Server gestartet und kann getestet werden.
+\begin{enumerate}
+\item Loggen Sie sich mit Ihrem github-Account auf \newline\url{https://glitch.com} ein.
+\item Öffnen Sie unter \url{https://glitch.com/@accountname} Ihre Nutzereinstellungen und laden Sie ein Avatarbild hoch. Anhand des Avatarbilds kann man erkennen, wer an welchen Projekten arbeitet.
+\end{enumerate}
+\vspace{0cm}
+}{\begin{enumerate}\setcounter{enumi}{3}
+\item Öffnen Sie den Quelltext der Informationsseite zu unserem Kurs (den Link erhalten Sie per Email). 
+\item Schreiben Sie zwischen die beiden grauen Kommentare ein kleines Statement (z.B. \emph{Hallo Welt!}) zum Kurs.
+\item Testen Sie Ihre Änderungen, indem Sie die Schaltfläche ``Live'' betätigen und das Aussehen der veränderten Seite überprüfen.
+\end{enumerate}}
+
+\card{Grundlagen: HTML}{ %%%
+Mit der Auszeichnungssprache \underline{HTML} werden Webseiten gestaltet. In HTML wird natürliche Sprache mit sogenannten ``Tags'' strukturiert. Ein \underline{Tag} wird mit spitzen Klammern notiert. Bis auf wenige Ausnahmen gibt es zu jedem ``öffnenden'' Tag auch einen ``schließenden''. In dem folgenden Beispiel wird eine Überschrift (engl.: Heading) der Ebene 2 kodiert:
+\par
+\texttt{<h2>\newline
+~~Das letzte Wort ist\newline
+~~<font color="\#0000FF">blau</font>\newline
+</h2>}
+\par
+Das Framework {\bfseries A-FRAME}, mit dem wir unsere 3D-Welt bauen werden, verwendet eine auf HTML aufbauende Syntax. 
+}{\begin{enumerate}
+\item Falls Sie mit HTML noch nicht vertraut sind, lesen Sie Kapitel 1 des HTML-Tutorials: ``Grundgerüst einer HTML-Seite''.
+\item Öffnen Sie die ``einfache Website'' und überprüfen Sie anhand Ihres Avatars, dass Sie bei glitch angemeldet sind.
+\item Gehen Sie auf die Projekt-Optionen und erstellen Sie einen Remix.
+\item Fügen Sie einige neue Elemente zur Website hinzu.
 \end{enumerate}
 }
+
+\card{Grundlagen: Hexadezimalsystem}{ %%%
+Wahrscheinlich haben Sie schon davon gehört, dass Zahlen im Computer mit Nullen und Einsen dargestellt werden. Die binäre Ziffernfolge $(1101)_2$ beispielsweise entspricht der Zahl $(11)_{10}$ im Dezimalsystem. Man rechnet so: $1\cdot2^0 + 0\cdot2^1+1\cdot2^2+1\cdot2^3 = 11$.
+\par
+Um Platz zu sparen, kann man vier solcher Binärziffern zusammenfassen und im sogenannten {\bfseries Hexadezimalsystem} darstellen. Mit vier Binärziffern lassen sich Zahlenwerte zwischen $(0000)_2=(0)_{10}$ und $(1111)_2=(16)_{10}$ darstellen. Für Zahlen im Hexadezimalsystem braucht man also insgesamt 16 Ziffern. Man nimmt hierfür die bekannten Ziffern 0-9 aus dem Dezimalsystem und zusätzlich noch die Buchstaben A-F, und weist diesen die Werte $(A)_{16}=(10)_{10}$ bis $(F)_{16}=(15)_{16}$ zu.}
+{\begin{enumerate}
+\item Falls Sie gerade zum ersten mal Hexadezimalzahlen gesehen haben, lassen Sie sich es noch mal vom Kursleiter oder Tutor erklären. Für A-Frame brauchen wir keine Zahlen umrechnen, aber z.B. Farbwerte werden hexadezimal dargestellt.
+\item Rechnen Sie die folgenden Zahlen ins Dezimal- bzw. Hexadezimalsystem um.
+\begin{enumerate}
+\item $(77)_{16}=$
+\item $(A1)_{16}=$
+\item $(100)_{10}=$
+\item $(128)_{10}=$
+\end{enumerate}
+\item Spielen Sie eine Runde Binary Blitz und notieren Sie Ihren Highscore.
+\end{enumerate}}
+
+\card{Grundlagen: Syntax}{ %%%
+
 \end{document}
