@@ -60,6 +60,11 @@ escapeinside={\%*}{*)}          % if you want to add a comment within your code
 \oldenumerate[wide, labelwidth=!, labelindent=0pt]
 }
 
+\let\olditemize\itemize
+\renewcommand{\itemize}{
+\olditemize[wide, labelwidth=!, labelindent=0pt]
+}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% document
 \begin{document}
@@ -129,7 +134,7 @@ Das Framework {\bfseries A-FRAME}, mit dem wir unsere 3D-Welt bauen werden, verw
 }{\begin{enumerate}
 \item Falls Sie mit HTML noch nicht vertraut sind, lesen Sie Kapitel 1 des HTML-Tutorials: ``Grundgerüst einer HTML-Seite''.
 \item Öffnen Sie die ``einfache Website'' und überprüfen Sie anhand Ihres Avatars, dass Sie bei glitch angemeldet sind.
-\item Gehen Sie auf die Projekt-Optionen und erstellen Sie einen Remix.
+\item Gehen Sie auf die Projekt-Optionen und erstellen Sie einen Remix. Sie haben nun eine Kopie der Seite erzeugt, die Ihrem Account zugeordnet ist und die Sie beliebig verändern können.
 \item Fügen Sie einige neue Elemente zur Website hinzu.
 \end{enumerate}
 }
@@ -151,5 +156,43 @@ Um Platz zu sparen, kann man vier solcher Binärziffern zusammenfassen und im so
 \end{enumerate}}
 
 \card{Grundlagen: Syntax}{ %%%
+Als {\bfseries Syntax} einer Sprache bezeichnet man eine Menge von Regeln, nach denen Ausdrücke in dieser Sprache gebildet werden. Für natürliche Sprachen sind dies Grammatik, Zeichensetzung und Rechtschreibung.
+\par
+Ob ein Ausdruck syntaktisch korrekt ist, kann man gut mit einem Algorithmus überprüfen. Bei unserem Projekt unterstützt uns \underline{glitch} und markiert alle Syntax-Fehler, die wir in \underline{HTML} oder \underline{JavaScript} machen, mit einem roten Punkt. 
+\par
+Glitch hebt außerdem die Syntax von HTML und JavaScript hervor, indem es Elemente farbig markiert. HTML-Tags z.B. werden blau gefärbt, Zeichenketten braun und Kommentare grau.
+}{
+\begin{enumerate}
+\item Öffnen Sie das glitch-Projekt ``Syntaxfehler'' und erstellen Sie einen Remix. Finden und korrigieren Sie dann die Syntaxfehler. Typische Fehler sind z.B.
+\begin{itemize}
+\item schließender Tag vergessen
+\item Tags werden in falscher Reihenfolge geschlossen
+\item HTML-Grundgerüst nicht beachtet
+\item Anführungszeichen vergessen
+\item Dezimalbrüche mit Komma statt mit Punkt (Im Angelsächsischen Raum werden bei Fließkommazahlen (Engl. Foating-Point-Numbers) die Nachkommastellen mit einem Punkt abgetrennt)
+\end{itemize}
+Tipp: Gehen Sie bei der Fehlersuche von oben nach unten vor.
+\end{enumerate}}
+
+\card{Grundlagen: Lesbarkeit}{ %%%
+Das Wichtigste bei einem Programm ist seine Korrektheit, also dass es das tut, was es tun soll. Ein weiterer Qualitätsaspekt ist die {\bfseries Lesbarkeit} eines Quelltextes.
+\par
+Durch \underline{Einrücken} des Quelltextes kann man seine Lesbarkeit erhöhen. 
+\begin{itemize}
+\item Wenn ein öffnender Tag in der selben Zeile wieder geschlossen wird, geht es in der nächsten mit der gleichen Einrückung weiter.
+\item Ansonsten wird nach einem öffnenden Tag die nächste Zeile um zwei Leerzeichen weiter nach rechts eingerückt.
+\item Nach einem schließenden Tag verringert sich die Einrückung um zwei Leerzeichen.
+\end{itemize}}
+{Die Lesbarkeit erhöht sich außerdem durch das Einfügen von Kommentaren. Kommentare sind Texte von Menschen für Menschen, die vom Computer ignoriert werden, und die Funktionen des Programmcodes in natürlicher Sprache erläutern. In \underline{HTML} kommentiert man wie folgt:\newline
+\texttt{<!-- Das ist ein Kommentar -->}
+\begin{enumerate}
+\item Öffnen Sie die ``Seite zum Einrücken''. Der Seitenquelltext ist mit der einfachen Website, von der Sie einen Remix erstellt haben, identisch, nur sind einige Zeilen anders umgebrochen und Einrückungen sind falsch.
+\item Rücken Sie die Zeilen gemäß den links angegebenen Regeln ein. Vergleichen Sie Ihr Ergebnis mit der einfachen Website.
+\item Fügen Sie einen Kommentar ein.
+\end{enumerate}}
+
+
+
+%\card{Werkzeuge: Tastaturkürzel}{ %%%
 
 \end{document}
