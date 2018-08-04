@@ -4,11 +4,12 @@
 \usepackage[a4paper, top=1cm, bottom=1cm, left=2cm, right=1cm]{geometry}
 \usepackage[ngerman]{babel}
 \usepackage{fontspec}
+\usepackage{kantlipsum}
 \usepackage{enumitem}
 \usepackage{xcolor}
 \usepackage[many]{tcolorbox}
-\usepackage{fillwith}
-\fillwithset{style=rule}
+\usepackage{url}
+\usepackage{parskip}
 \usepackage{siunitx}
 \sisetup{output-decimal-marker = {,}}
 
@@ -16,12 +17,21 @@
 \pagestyle{empty}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% command definitions
-\newcommand{\card}[2]{
-\tcboxfit[width=18cm,height=8cm,nobeforeafter,before=\noindent,colback=white]{ 
-\begin{minipage}[t][7.3cm][t]{0.482\linewidth}
-{\bfseries #1}\\ #2  
-\end{minipage}\hspace{3mm}\vline 
-}}
+\newcommand{\card}[3]{
+\tcboxfit[width=18cm,height=8cm,nobeforeafter,before=\noindent,colback=white]{
+\begin{tabular}{ p{0.475\linewidth} | p{0.475\linewidth}} 
+\begin{minipage}[t]{\linewidth}%
+{\bfseries #1}%
+\par\setlength{\parskip}{6pt}%
+#2%
+\end{minipage}%
+&
+\begin{minipage}[t]{\linewidth}%
+#3%
+\end{minipage}%
+\end{tabular}
+}\vfill
+}
 
 \let\oldenumerate\enumerate
 \renewcommand{\enumerate}{
@@ -42,23 +52,27 @@ von Till Zoppke
 
 Die Lernkarten wurden erstellt für den Ferienkurs ``ProInformatik V'', 6.-10. August 2018, an der Freien Universität Berlin.
 
-Die Karten gliedern sich in verschiedene Kapitel.
+Die Karten sind nach Themen gegliedert. Zu den Karten gibt es auch einen Spielplan, auf dem die Lernenden ihren Fortschritt mit einer Spielfigur markieren können.
+
+Jede Lernkarte bietet eine oder mehrere Aufgaben zur Lernkontrolle und Raum für Notizen. Die Lernenden sammeln die Lernkarten in einem Hefter und haben so Unterlagen aus dem Kurs. So wie Kontoauszüge symbolisieren die Karten den Lernfortschritt der Lernenden. Mit jeder bearbeiteten Lernkarte zahlen sie auf ihr Wissenskonto ein.
 \pagebreak
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% cards
 
-\card{Werkzeuge: Firefox Browser}{
+\card{Werkzeuge: Firefox}{ %%%
 Wir entwickeln ein Internet-Projekt. Oder genauer: eine Website im World-Wide-Web, auf der VR-Inhalte dargestellt werden. Seit der Erfindung des World-Wide-Web hat sich der Web-Browser als Programm zur Darstellung von Websites herausgebildet. Er kann den Seitenquelltext interpretieren und die Seite für den Nutzer darstellen. Für unser Projekt nutzen wir den Webbrowser Firefox. 
 \begin{enumerate}
 \item Recherchieren Sie im Internet, welche Eigenschaften der Firefox gegenüber anderen Browsern hat, die für unser Projekt vorteilhaft sein könnten.
 \item Argumentieren Sie, welchen Sinn es macht, dass wir uns im Projekt auf einen Standard-Browser einigen.
 \end{enumerate}
+{}}
+
+\card{Werkzeuge: git \& github}{ %%%
+Sie kennen es von Ihrem Handy: ständig kommen neue Versionen des Betriebssystems und von Apps heraus, die neue Features, Verbesserungen oder Bugfixes enthalten. Für Verwaltung des Sourcecodes nutzen Softwareentwickler ein Werkzeug vom Typ \underline{Versionsverwaltung}. Diese führt über alle Änderungen Buch und ermöglicht es, Patches zu generieren und auf ältere Versionen einer Datei zurückzugreifen.
+
+Die zur Zeit populärste Webplattform für Softwareprojekte namens {\bfseries github} basiert auf einer Versionsverwaltung namens {\bfseries git}. In diesem Projekt werden wir auf eine Versionsverwaltung verzichten, um die Einarbeitungszeit zu sparen. Wir benötigen jedoch einen github-Account, um den Online-Editor {\bfseries glitch} benutzen zu können.}
+{\begin{enumerate}
+\item Öffnen Sie \url{https://github.com} im Browser und registrieren Sie sich für einen Account.
+\end{enumerate}
 }
-
-\vfill
-
-\tcboxfit[width=18cm,height=8cm,nobeforeafter,
-  before=\noindent]{
-}
-
 \end{document}
