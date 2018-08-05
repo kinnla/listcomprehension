@@ -12,6 +12,10 @@
 \usepackage{parskip}
 \usepackage{siunitx}
 \sisetup{output-decimal-marker = {,}}
+\newfontfamily{\FA}[Path = ./]{fontawesome-webfont}
+%\def\faLink{\FA\symbol{"F0C1}}
+\def\faArrow{\FA\symbol{"F0A9}\normalfont~}
+
 \usepackage{listings}
 \tcbuselibrary{listings, breakable, skins}
 \lstset{ %
@@ -87,11 +91,21 @@ Zu den Lernkarten gibt es eine Website. Diese enthält die auf den Lernkarten an
 
 Auf der Checkliste sind alle Lernkarten verzeichnet. Die Lernenden können abhaken, wenn sie eine Karte erledigt haben. Ihr Ergebnis sollen Sie dem Kursleiter, dem Tutor oder einem anderen Lernenden zeigen, der dann abzeichnet, dass die Aufgabe gelöst wurde (Vier-Augen-Prinzip).
 
+{\bfseries\large Legende}\\
+\begin{itemize}
+\item Die auf einer Lernkarte definierten oder erläuterten Begriffe sind {\bfseries fett} markiert.
+\item Wenn auf Begriffe von anderen Lernkarten verwiesen wird, so sind diese \underline{unterstrichen}.
+\item Quelltext und Tastaturküzel sind in \texttt{Monospaced} gesetzt.
+\item Links zu Web-Ressourcen, die von der Kursseite aus zugänglich sind, sind mit einem \faArrow\normalfont~Pfeil markiert.
+\end{itemize}
+
 \vfill
 \includegraphics[width=2cm]{CC-BY-SA}
 \pagebreak
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% cards
+
+%%% Abschnitt 1: Werkzeuge
 
 \card{Werkzeuge: Firefox}{ %%%
 Wir entwickeln ein Internet-Projekt. Oder genauer: eine Website im World-Wide-Web, auf der VR-Inhalte dargestellt werden. Seit der Erfindung des World-Wide-Web hat sich der Web-Browser als Programm zur Darstellung von Websites herausgebildet. Er kann den Seitenquelltext interpretieren und die Seite für den Nutzer darstellen. Für unser Projekt nutzen wir den Webbrowser Firefox. 
@@ -102,17 +116,17 @@ Wir entwickeln ein Internet-Projekt. Oder genauer: eine Website im World-Wide-We
 {}}
 
 \card{Werkzeuge: git \& github}{ %%%
-Sie kennen es von Ihrem Handy: ständig kommen neue Versionen des Betriebssystems und von Apps heraus, die neue Features, Verbesserungen oder Bugfixes enthalten. Für Verwaltung des Sourcecodes nutzen Softwareentwickler ein Werkzeug vom Typ \underline{Versionsverwaltung}. Diese führt über alle Änderungen Buch und ermöglicht es, Patches zu generieren und auf ältere Versionen einer Datei zurückzugreifen.\par
-Die zur Zeit populärste Webplattform für Softwareprojekte namens {\bfseries github} basiert auf einer Versionsverwaltung namens {\bfseries git}. In diesem Projekt werden wir auf eine Versionsverwaltung verzichten, um die Einarbeitungszeit zu sparen. Wir benötigen jedoch einen github-Account, um den Online-Editor {\bfseries glitch} benutzen zu können.}
+Sie kennen es von Ihrem Handy: ständig kommen neue Versionen des Betriebssystems und von Apps mit Verbesserungen oder Bugfixes heraus. Das alles muss programmiert werden. Für die Verwaltung des Programmcodes nutzen Softwareentwickler ein Werkzeug vom Typ {\bfseries Versionsverwaltung}. Diese führt über alle Änderungen Buch und ermöglicht es, Patches zu generieren und auf ältere Versionen einer Datei zurückzugreifen.\par
+Die zur Zeit populärste Webplattform für Softwareprojekte namens {\bfseries github} basiert auf der Versionsverwaltung {\bfseries git}. In diesem Projekt werden wir auf eine Versionsverwaltung verzichten, um die Einarbeitungszeit zu sparen. Wir benötigen jedoch einen github-Account, um den Online-Editor {\bfseries glitch} benutzen zu können.}
 {\begin{enumerate}
-\item Öffnen Sie \url{https://github.com} im Browser und registrieren Sie sich für einen Account.
+\item Öffnen Sie \faArrow \url{https://github.com} im Browser und registrieren Sie sich für einen Account.
 \item Schauen Sie nach, an welchen Projekten Ihr Kursleiter in den letzten beiden Wochen gearbeitet hat.
 \end{enumerate}}
 
 \card{Werkzeuge: glitch}{ %%%
-Auf der Plattform {\bfseries glitch} lassen sich Web-Projekte entwickeln und teilen. Der Online-Editor mit Syntax-Highlighting für gängige Programmier- und Auszeichnungssprachen (HTML, JavaScript, CSS$\ldots$) ermöglicht mehreren Leuten kollaborative Zusammenarbeit an der gleichen Datei. Mit der Funktion ``Live'' wird das Projekt auf einem Server gestartet und kann getestet werden.
+Auf der Plattform {\bfseries glitch} lassen sich Web-Projekte entwickeln und teilen. Der {\bfseries Online-Editor} mit Syntax-Highlighting für gängige Programmier- und Auszeichnungssprachen (HTML, JavaScript, CSS$\ldots$) ermöglicht mehreren Leuten kollaborative Zusammenarbeit an der gleichen Datei. Mit der Funktion ``Live'' wird das Projekt auf einem Server gestartet und kann getestet werden.
 \begin{enumerate}
-\item Loggen Sie sich mit Ihrem github-Account auf \newline\url{https://glitch.com} ein.
+\item Loggen Sie sich mit Ihrem github-Account auf \newline\faArrow \url{https://glitch.com} ein.
 \item Öffnen Sie unter \url{https://glitch.com/@accountname} Ihre Nutzereinstellungen und laden Sie ein Avatarbild hoch. Anhand des Avatarbilds kann man erkennen, wer an welchen Projekten arbeitet.
 \end{enumerate}
 \vspace{0cm}
@@ -122,18 +136,38 @@ Auf der Plattform {\bfseries glitch} lassen sich Web-Projekte entwickeln und tei
 \item Testen Sie Ihre Änderungen, indem Sie die Schaltfläche ``Live'' betätigen und das Aussehen der veränderten Seite überprüfen.
 \end{enumerate}}
 
+\card{Werkzeuge: Tastaturkürzel}{ %%%
+Für häufig genutzte Funktionen gibt es auch in \underline{glitch} {\bfseries Tastaturkürzel}. Vorteil von Tastaturkürzeln ist, dass man beim Arbeiten Zeit spart. Nachteil ist, dass man die Kürzel auswendig lernen muss. Man muss also einmal zu Beginn Zeit investieren, um die Kürzel zu lernen, die sich über einen längeren Zeitraum hinweg wieder auszahlt. Daraus folgt: je eher man Tastaturkürzel lernt, desto größere Zeitersparnis bieten sie.
+\begin{enumerate}
+\item Öffnen Sie ein glitch-Projekt Ihrer Wahl und testen Sie die angegebenen Tastaturkürzel im Editor aus.
+\item Wählen Sie im Editor die Funktion ``Glitch-Options'' $\rightarrow$ ``Keyboard Shortcuts''. Probieren Sie die Funktionen aus, die Ihnen interessant erscheinen.
+\item Öffnen Sie die \faArrow Übersicht der Sublime-Tastaturkürzel. Die meisten sind auch in glitch verwendbar, probieren Sie einige aus.
+\end{enumerate}}
+{\begin{itemize}
+\item Mit \texttt{Shift + Cursortasten} lässt sich Text markieren, ohne die Maus zu benutzen.
+\item Markieren Sie einige Zeilen und drücken Sie \texttt{Tab}, um den Text einzurücken.
+\item Mit \texttt{Shift + Tab} können Sie die Einrückung wieder verringern.
+\item Mit \texttt{Ctrl + Shift + K} löschen Sie die aktuelle Zeile.
+\item Mit \texttt{Ctrl + /} können Sie Programmcode \underline{auskommentieren}, um ihn für den Interpreter unsichtbar zu machen.
+\item Sie machen die letzten Änderungen Schritt für Schritt rückgängig, indem Sie \texttt{Ctrl + z} betätigen.
+\item Mit \texttt{Ctrl + Shift + Z} werden die Änderungen wiederhergestellt.
+\end{itemize}
+}
+
+%% Abschnitt 2: Grundlagen
+
 \card{Grundlagen: HTML}{ %%%
-Mit der Auszeichnungssprache \underline{HTML} werden Webseiten gestaltet. In HTML wird natürliche Sprache mit sogenannten ``Tags'' strukturiert. Ein \underline{Tag} wird mit spitzen Klammern notiert. Bis auf wenige Ausnahmen gibt es zu jedem ``öffnenden'' Tag auch einen ``schließenden''. In dem folgenden Beispiel wird eine Überschrift (engl.: Heading) der Ebene 2 kodiert:
+Mit der Auszeichnungssprache {\bfseries HTML} werden Webseiten gestaltet. In HTML wird natürliche Sprache mit sogenannten Tags strukturiert. Ein {\bfseries Tag} wird mit spitzen Klammern notiert. Bis auf wenige Ausnahmen gibt es zu jedem ``öffnenden'' Tag auch einen ``schließenden''. In dem folgenden Beispiel wird eine Überschrift (engl.: Heading) der Ebene 2 kodiert:
 \par
 \texttt{<h2>\newline
 ~~Das letzte Wort ist\newline
 ~~<font color="\#0000FF">blau</font>\newline
 </h2>}
 \par
-Das Framework {\bfseries A-FRAME}, mit dem wir unsere 3D-Welt bauen werden, verwendet eine auf HTML aufbauende Syntax. 
+Das Framework \underline{A-FRAME}, mit dem wir unsere 3D-Welt bauen werden, verwendet eine auf {\bfseries HTML} aufbauende \underline{Syntax}. 
 }{\begin{enumerate}
-\item Falls Sie mit HTML noch nicht vertraut sind, lesen Sie Kapitel 1 des HTML-Tutorials: ``Grundgerüst einer HTML-Seite''.
-\item Öffnen Sie die ``einfache Website'' und überprüfen Sie anhand Ihres Avatars, dass Sie bei glitch angemeldet sind.
+\item Falls Sie mit HTML noch nicht vertraut sind, lesen Sie \faArrow Kapitel 1 des HTML-Tutorials ``Grundgerüst einer HTML-Seite''.
+\item Öffnen Sie die \faArrow einfache Website und überprüfen Sie anhand Ihres Avatars, dass Sie bei glitch angemeldet sind.
 \item Gehen Sie auf die Projekt-Optionen und erstellen Sie einen Remix. Sie haben nun eine Kopie der Seite erzeugt, die Ihrem Account zugeordnet ist und die Sie beliebig verändern können.
 \item Fügen Sie einige neue Elemente zur Website hinzu.
 \end{enumerate}
@@ -152,7 +186,7 @@ Um Platz zu sparen, kann man vier solcher Binärziffern zusammenfassen und im so
 \item $(100)_{10}=$
 \item $(128)_{10}=$
 \end{enumerate}
-\item Spielen Sie eine Runde Binary Blitz und notieren Sie Ihren Highscore.
+\item Spielen Sie eine Runde \faArrow Binary Blitz und notieren Sie Ihren Highscore.
 \end{enumerate}}
 
 \card{Grundlagen: Syntax}{ %%%
@@ -160,10 +194,10 @@ Als {\bfseries Syntax} einer Sprache bezeichnet man eine Menge von Regeln, nach 
 \par
 Ob ein Ausdruck syntaktisch korrekt ist, kann man gut mit einem Algorithmus überprüfen. Bei unserem Projekt unterstützt uns \underline{glitch} und markiert alle Syntax-Fehler, die wir in \underline{HTML} oder \underline{JavaScript} machen, mit einem roten Punkt. 
 \par
-Glitch hebt außerdem die Syntax von HTML und JavaScript hervor, indem es Elemente farbig markiert. HTML-Tags z.B. werden blau gefärbt, Zeichenketten braun und Kommentare grau.
+Glitch hebt außerdem die Syntax von HTML und JavaScript hervor, indem es Elemente farbig markiert. HTML-Tags z.B. werden blau gefärbt, Zeichenketten braun und \underline{Kommentare} grau.
 }{
 \begin{enumerate}
-\item Öffnen Sie das glitch-Projekt ``Syntaxfehler'' und erstellen Sie einen Remix. Finden und korrigieren Sie dann die Syntaxfehler. Typische Fehler sind z.B.
+\item Öffnen Sie das glitch-Projekt \faArrow Syntaxfehler und erstellen Sie einen Remix. Finden und korrigieren Sie dann die Syntaxfehler. Typische Fehler sind:
 \begin{itemize}
 \item schließender Tag vergessen
 \item Tags werden in falscher Reihenfolge geschlossen
@@ -174,25 +208,22 @@ Glitch hebt außerdem die Syntax von HTML und JavaScript hervor, indem es Elemen
 Tipp: Gehen Sie bei der Fehlersuche von oben nach unten vor.
 \end{enumerate}}
 
-\card{Grundlagen: Lesbarkeit}{ %%%
-Das Wichtigste bei einem Programm ist seine Korrektheit, also dass es das tut, was es tun soll. Ein weiterer Qualitätsaspekt ist die {\bfseries Lesbarkeit} eines Quelltextes.
-\par
-Durch \underline{Einrücken} des Quelltextes kann man seine Lesbarkeit erhöhen. 
+\card{Grundlagen: Lebarkeit}{ %%%
+Das Wichtigste bei einem Programm ist seine Korrektheit, also dass es das tut, was es tun soll. Ein weiterer Qualitätsaspekt ist die {\bfseries Lesbarkeit}, die man durch {\bfseries Einrücken} des Quelltextes erhöhen kann. 
 \begin{itemize}
 \item Wenn ein öffnender Tag in der selben Zeile wieder geschlossen wird, geht es in der nächsten mit der gleichen Einrückung weiter.
 \item Ansonsten wird nach einem öffnenden Tag die nächste Zeile um zwei Leerzeichen weiter nach rechts eingerückt.
 \item Nach einem schließenden Tag verringert sich die Einrückung um zwei Leerzeichen.
 \end{itemize}}
-{Die Lesbarkeit erhöht sich außerdem durch das Einfügen von Kommentaren. Kommentare sind Texte von Menschen für Menschen, die vom Computer ignoriert werden, und die Funktionen des Programmcodes in natürlicher Sprache erläutern. In \underline{HTML} kommentiert man wie folgt:\newline
-\texttt{<!-- Das ist ein Kommentar -->}
+{Die Lesbarkeit erhöht sich außerdem durch das Einfügen von {\bfseries Kommentaren}. Kommentare sind Texte von Menschen für Menschen, die vom Computer ignoriert werden, und die Funktionen des Programmcodes in natürlicher Sprache erläutern.\newline
+\texttt{<!-- Dies ist ein Kommentar in HTML -->}
 \begin{enumerate}
-\item Öffnen Sie die ``Seite zum Einrücken''. Der Seitenquelltext ist mit der einfachen Website, von der Sie einen Remix erstellt haben, identisch, nur sind einige Zeilen anders umgebrochen und Einrückungen sind falsch.
+\item Öffnen Sie die \faArrow Seite zum Einrücken. Der Seitenquelltext ist mit der einfachen Website, von der Sie einen Remix erstellt haben, identisch, nur sind einige Zeilen anders umgebrochen und Einrückungen sind falsch.
 \item Rücken Sie die Zeilen gemäß den links angegebenen Regeln ein. Vergleichen Sie Ihr Ergebnis mit der einfachen Website.
-\item Fügen Sie einen Kommentar ein.
+\item Fügen Sie auch einen Kommentar ein.
 \end{enumerate}}
 
 
 
-%\card{Werkzeuge: Tastaturkürzel}{ %%%
 
 \end{document}
