@@ -164,7 +164,7 @@ Mit der Auszeichnungssprache {\bfseries HTML} werden Webseiten gestaltet. In HTM
 ~~<font color="\#0000FF">blau</font>\newline
 </h2>}
 \par
-Das Framework \underline{A-FRAME}, mit dem wir unsere 3D-Welt bauen werden, verwendet eine auf {\bfseries HTML} aufbauende \underline{Syntax}. 
+Das Framework \underline{A-FRAME}, das wir für unser VR-Projekt verwenden, setzt auf HTML auf. Sie brauchen nicht alle HTML-Tags zu kennen, wohl aber die Syntax und das {\bfseries HTML-Grundgerüst}.
 }{\begin{enumerate}
 \item Falls Sie mit HTML noch nicht vertraut sind, lesen Sie \faArrow Kapitel 1 des HTML-Tutorials ``Grundgerüst einer HTML-Seite''.
 \item Öffnen Sie die \faArrow einfache Website und überprüfen Sie anhand Ihres Avatars, dass Sie bei glitch angemeldet sind.
@@ -223,7 +223,60 @@ Das Wichtigste bei einem Programm ist seine Korrektheit, also dass es das tut, w
 \item Fügen Sie auch einen Kommentar ein.
 \end{enumerate}}
 
+%% Abschnitt 3: A-FRAME
+
+\card{A-FRAME: Geometrische Körper}{ %%%
+Die einfachsten Objekte, die sich in A-FRAME darstellen lassen, sind {\bfseries geometrische Körper}. Hierzu schauen wir uns eine einfache Szene an, die von A-FRAME zum Einstieg bereitgestellt wird.
+\begin{enumerate}
+\item Öffnen Sie die Seite \faArrow Hello WebVR und klicken Sie auf ``View Source''. Wählen Sie dann links in der Sitebar ``index.html''.
+\item Lesen Sie die Erläuterungen (rechts) zu der Seite.
+\item Erstellen Sie einen Remix und verändern Sie die Größe der Objekte.
+\end{enumerate}}
+{\begin{itemize}
+\item Das Grundgerüst der Seite ist das gleiche wie für alle HTML-Webseiten. Um die Funktionen von A-FRAME verfügbar zu machen, wird in Z.7 die A-FRAME-Bibliothek eingebunden.
+\item Die von A-FRAME zur Verfügung gestellten Tags haben alle die Form \texttt{<a-tagname>}.
+\item Mit \texttt{<a-scene>...</a-scene>} wird der Bereich für unsere VR-Welt definiert. Mit dem Attribut \texttt{background} wird eine \underline{Hintergrundfarbe} für die Szene definiert.
+\item Die Szene enthält vier Elemente: Einen Quader (box), eine Kugel (sphere), einen Zylinder und eine Ebene (plane).
+\item Die Größe der Objekte ist durch die Attribute \texttt{radius}, \texttt{width} und \texttt{height} gegeben.
+\end{itemize}
+}
+
+\card{A-FRAME: 3D-Koordinaten}{ %%%
+Zu den beiden Dimensionen, die Sie als X- und Y-Achse von der Tafel aus dem Mathematikunterricht kennen, kommt in VR-Welten noch eine {\bfseries 3. Dimension} hinzu, die Z-Achse. Das Koordinatensystem in A-Frame ist {\bfseries rechtshändig}. Das bedeutet, die Achsen sind so im Raum orientiert, wie in der Skizze rechts angegeben.
+\par
+Sofern es nicht anders definiert ist, startet die Kamera im Ursprung $(0,0,0)$ des Koordinatensystems und blickt in den Halbraum mit negativen Z-Werten (also in die entgegengesetzte Richtung, als die der Mittelfinger zeigt).
+\begin{enumerate}
+\item Verändern Sie in Ihrem Remix von \faArrow Hallo WebVR die Koordinaten der Objekte und beobachten Sie, was passiert.
+\end{enumerate}}
+{\begin{center}
+{\bfseries Rechte-Hand-Regel}\par\vspace{0.5cm}
+\includegraphics[width=6cm, trim= 0 0 1cm 0, clip=true]{handregel}
+\end{center}}
+
+\card{A-FRAME: Drehung im Raum}{ %%%
+Objekte können im Raum gedreht werden. Hierzu gibt man für jede {\bfseries Drehachse} an, um wieviel Grad der Körper um sie gedreht werden soll. Hierbei wird zunächst um die X-Achse, dann um die Y-Achse und schließlich um die Z-Achse gedreht. {\bfseries Drehpunkt} ist der Mittelpunkt des Körpers.
+\begin{enumerate}
+\item Nehmen Sie einen Gegenstand (z.B. Ihr Handy) und drehen Sie ihn aus seiner Ursprungsposition jeweils
+\begin{enumerate}
+\item 90 Grad um die X-Achse 
+\item -90 Grad um die Y-Achse
+\item 45 Grad um die Z-Achse
+\end{enumerate}
+\item Verändern Sie in Ihrem Remix von \faArrow Hallo WebVR die Rotation der Objekte und beobachten Sie, was passiert.
+\end{enumerate}}
+{\begin{center}
+{\bfseries Korkenzieherregel}\par\vspace{0.4cm}
+\includegraphics[width=5cm]{korkenzieherregel}
+\end{center}
+Die Drehrichtung kann man sich nach der Korkenzieherregel veranschaulichen.}
+
+\card{A-FRAME: Farbe}{
 
 
+%\card{A-FRAME: Slack-Channel}{ %%%
+%\card{A-FRAME: Camera}{ %%%
+%\card{A-FRAME: Zusammengesetzte Objekte}{ %%%
+
+%\card{Grundlagen: Java-Script}{ %%%
 
 \end{document}
