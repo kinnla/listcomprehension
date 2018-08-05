@@ -286,6 +286,10 @@ Eine Farbe wird hierzu aus drei Helligkeitswerten für rot, grün und blau zusam
 \item A-FRAME bietet auch eine verkürzte Farbkodierung, wo jeder Farbkanal nur durch eine einzige Hexadezimal-Ziffer angegeben wird, z.B. können die Farben links auch mit \texttt{\#040} bzw. \texttt{\#EEF} dargestellt werden. Testen Sie diese Kurzdarstellung.
 \end{enumerate}}
 
+%% hack that fixes the bottom margin for the last page
+\newpage
+\newgeometry{top=1cm, bottom=0cm, left=2cm, right=1cm}
+
 \card{A-FRAME: Spielwiese}{ %%%
 Als {\bfseries Spielwiese} bezeichnet man einen geschützten digitalen Raum, in dem man Neues ausprobieren kann. Sie haben bereits einen Remix von \faArrow Hello WebVR erstellt. Machen Sie nun diesen Remix zu Ihrer Spielwiese.
 \begin{enumerate}
@@ -321,7 +325,6 @@ Für Szenen mit vielen Entitäten ist es sinnvoll, diese zu gruppieren. Beispiel
 \item Neigen Sie den Baum mit Hilfe des Attributs \texttt{rotation}.
 \end{enumerate}
 }
-
 
 
 \card{A-FRAME: Kamera}{ %%%
