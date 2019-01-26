@@ -1,0 +1,56 @@
+% !TEX TS-program = xelatex
+% !TEX encoding = UTF-8 Unicode
+\documentclass [a4paper,landscape,11pt] {extarticle}
+\usepackage[top=2cm, bottom=1cm, left=2cm, right=2cm]{geometry} %,showframe
+\usepackage[ngerman]{babel}
+\usepackage{fontspec}
+\usepackage{xcolor} 
+\usepackage{amssymb}  
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{tabularx}
+
+\definecolor{shadecolor}{gray}{.85}
+\pagestyle{empty}
+
+\newcounter{stunde}
+\newcommand{\cellContent}{Fach:\hspace{1.2cm}Kürzel:\vspace{2mm}\newline\hspace*{\fill}++~~+~~~~-~~~-~-\newline Mitarbeit:\hfill$\square~~~\square~~~\square~~~\square$\newline Benehmen:\hfill$\square~~~\square~~~\square~~~\square$ }
+\newcommand{\tablerow}{\hline\stepcounter{stunde}\newline\arabic{stunde}.&\cellContent&\cellContent&\cellContent&\cellContent&\cellContent\\}
+
+\begin{document}
+
+\begin{center}
+Name:~\colorbox{shadecolor}{\hspace{4cm}\strut}
+\hfill {\Large\bfseries Wochenplan}
+\hfill Klasse:~\colorbox{shadecolor}{\hspace{1cm}\strut} 
+\par\medskip
+
+\begin{tabularx}{\textwidth}{|c| X | X | X | X | X |}
+\hline
+& {\large\bfseries Montag}, der & {\large\bfseries Dienstag}, der & {\large\bfseries Mittwoch}, der & {\large\bfseries Donnerstag}, der & {\large\bfseries Freitag}, der\\
+\tablerow
+\hline
+\tablerow
+\hline
+\tablerow
+\hline
+\tablerow
+\hline
+\tablerow
+\hline
+\tablerow
+\hline
+\tablerow
+\hline
+\end{tabularx}
+
+
+%Klassenleitung ~\colorbox{shadecolor}{\hspace{4cm}\strut}
+%\hfill
+%Erziehungsberechtigte ~\colorbox{shadecolor}{\hspace{4cm}\strut}
+
+\end{center}%
+
+
+
+\end{document}
