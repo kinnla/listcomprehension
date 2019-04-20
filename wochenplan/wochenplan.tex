@@ -1,7 +1,7 @@
 % !TEX TS-program = xelatex
 % !TEX encoding = UTF-8 Unicode
-\documentclass [a4paper,landscape,11pt] {extarticle}
-\usepackage[top=2cm, bottom=1cm, left=2cm, right=2cm]{geometry} %,showframe
+\documentclass [a4paper,11pt] {extarticle}
+\usepackage[landscape, top=2cm, bottom=1cm, left=2cm, right=2cm]{geometry} %,showframe
 \usepackage[ngerman]{babel}
 \usepackage{fontspec}
 \usepackage{xcolor} 
@@ -9,6 +9,7 @@
 \usepackage{multicol}
 \usepackage{graphicx}
 \usepackage{tabularx}
+\usepackage{rotating}
 
 \definecolor{shadecolor}{gray}{.85}
 \pagestyle{empty}
@@ -19,11 +20,10 @@
 
 \begin{document}
 
+\noindent{\Large\bfseries Wochenplan} für ~\colorbox{shadecolor}{\hspace{4cm}\strut}~~~
+Klasse:~\colorbox{shadecolor}{\hspace{1cm}\strut} 
+%\par\medskip
 \begin{center}
-Name:~\colorbox{shadecolor}{\hspace{4cm}\strut}
-\hfill {\Large\bfseries Wochenplan}
-\hfill Klasse:~\colorbox{shadecolor}{\hspace{1cm}\strut} 
-\par\medskip
 
 \begin{tabularx}{\textwidth}{|c| X | X | X | X | X |}
 \hline
@@ -44,13 +44,29 @@ Name:~\colorbox{shadecolor}{\hspace{4cm}\strut}
 \hline
 \end{tabularx}
 
+\vfill
+Kontrolle durch Klassenleitung: 
+ ~\rule{4cm}{.3mm} %\colorbox{shadecolor}{\hspace{4cm}\strut}
+\hfill
+Kenntnisnahme durch Erziehungsberechtigte: ~\rule{4cm}{.3mm} %~\colorbox{shadecolor}{\hspace{4cm}\strut}
 
-%Klassenleitung ~\colorbox{shadecolor}{\hspace{4cm}\strut}
-%\hfill
-%Erziehungsberechtigte ~\colorbox{shadecolor}{\hspace{4cm}\strut}
+\end{center}
 
-\end{center}%
-
-
-
+\pagebreak
+\rotatebox{90}{
+\parbox{0.65\linewidth}{
+\underline{\large Anleitung}
+\par\medskip
+\begin{enumerate}
+\item Trage Deinen Namen und Deine Klasse in die grauen Felder ein.
+\item Trage für jeden der fünf Wochentage das entsprechende Datum ein.
+\item Übertrage Deinen Stundenplan in das Formular und trage für jede Stunde das Unterrichtsfach ein.
+\item Zeige den Wochenplan im Anschluss an jede Stunde der Lehrkraft. Sie wird Deine Mitarbeit und Dein Benehmen bewerten.
+\item Achte darauf, dass die Lehrkraft mit ihrem Kürzel unterschreibt. Es ist \underline{Deine} Verantwortung, dass der Plan am Ende der Woche vollständig ist.
+\item Zeige den Wochenplan in der folgenden Woche Deinem Klassenlehrer/ Deiner Klassenlehrerin. Er/ sie wird die Vollständigkeit überprüfen und ggf. eine Kopie anfertigen.
+\item Zeige dann den Plan Deinen Eltern. Sie bestätigen mit Ihrer Unterschrift, dass sie den Plan gesehen haben.
+\item Abschließend zeige den Plan noch mal Deinem Klassenlehrer/ Deiner Klassenlehrerin, damit er/ sie weiß, dass Du den Plan auch Deinen Eltern gezeigt hast.
+\end{enumerate}}}
 \end{document}
+
+
